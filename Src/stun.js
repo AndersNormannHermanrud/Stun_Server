@@ -9,6 +9,10 @@ class stun {
         this.sw = sw;
         this.socket = null;
     }
+    promise = new Promise((resolve, reject) =>{
+
+    })
+    
 }
 
 
@@ -76,36 +80,3 @@ class stun {
    expired, and the NAT allocated the same public address and port to
    the new binding), or receives no response at all, it knows that the
    binding has expired.*/
-
-
-/*    All STUN messages consist of a 20 byte header:
-
-   0                   1                   2                   3
-   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |      STUN Message Type        |         Message Length        |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-  |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                           Transaction ID
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                                                                  |
-  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-  The Message Types can take on the following values:
-
-     0x0001  :  Binding Request
-     0x0101  :  Binding Response
-     0x0111  :  Binding Error Response
-     0x0002  :  Shared Secret Request
-     0x0102  :  Shared Secret Response
-     0x0112  :  Shared Secret Error Response
-
-  The message length is the count, in bytes, of the size of the
-  message, not including the 20 byte header.
-
-  The transaction ID is a 128 bit identifier.  It also serves as salt
-  to randomize the request and the response.  All responses carry the
-  same identifier as the request they correspond to. */
