@@ -34,5 +34,5 @@ The STUN Message Type field is decomposed further into the following
 */
 
 function Message() {
-    
+
 }
