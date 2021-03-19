@@ -32,6 +32,7 @@ The STUN Message Type field is decomposed further into the following
 
                 Figure 3: Format of STUN Message Type Field
 */
+Message.MAGIC_COOKIE = 0x2112A442;
 
 function Message() {
     
