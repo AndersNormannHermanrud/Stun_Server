@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const util = require('util');
 const Message = require('./Message');
-const 
+const net = require('dgram')
 socket = net.createSocket('udp4');
 
 function Server(options) {
