@@ -89,4 +89,4 @@ function hexStringToByte(str) {
     }
 
     return new Uint8Array(a);
-}
+};
