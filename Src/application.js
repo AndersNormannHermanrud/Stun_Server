@@ -1,7 +1,11 @@
 const app = Vue.createApp({
     data() {
-        return {}
+        return {
+            peers:[]
+        }
     },
-    methods: {},
+    methods: {
+
+    },
     computed: {}
 })
