@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/AndersNormannHermanrud/Stun_Server/issues"
   },
-  "homepage": "https://github.com/AndersNormannHermanrud/Stun_Server#readme"
+  "homepage": "https://github.com/AndersNormannHermanrud/Stun_Server#readme",
+  "dependencies": {
+    "websocket": "^1.0.33"
+  }
 }
