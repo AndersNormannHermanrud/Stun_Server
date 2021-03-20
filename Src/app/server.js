@@ -39,11 +39,6 @@ const requestListener = function (req, res) {
             res.writeHead(200);
             res.end(applicationFile)
             break
-        case "/bundle.js":
-            res.setHeader("Content-Type", "text/javascript");
-            console.log("Sending bundle.js")
-            res.writeHead(200);
-            res.end(applicationFile)
         default:
             break
     }
@@ -82,8 +77,10 @@ wsServer.on('request', function (request) {
         switch (msg.code) {
             case 1:
                 console.log("New client added to broadcast list: ")
-                let return_msg = JSON.stringify({value: 1, message:"General kenobi"})
-                connection.sendUTF(return_msg)
+                let return_msg = JSON.stringify({
+                    code: 1,
+                    message:"General Kenobi"})
+                connection.send(return_msg)
         }
     });
 
