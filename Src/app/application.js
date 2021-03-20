@@ -3,7 +3,11 @@ const app = Vue.createApp({
         return {
             room: undefined,
             username: undefined,
-            rooms: []
+            time_stamp: undefined,
+            rooms: [],
+            chat: [{
+                username: this.username, time_stamp: this.time_stamp
+            }]
         }
     },
     methods: {
