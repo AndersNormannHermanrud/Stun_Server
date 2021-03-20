@@ -40,11 +40,36 @@ function Message(type, transactionid, body) {
     this.transactionid = transactionid;
 };
 module.exports = Message;
-
+Messsage.decodeMessage = function (message){
+    var type = message.readUInt16BE(4);
+    var lenght = message.readUInt16BE(2);
+    var transactionid = message.slice(8,20);
+    if (lenght<596){
+        this.body = new Array(lenght+1).join('A');
+        var stunMessage = new Message(type, transactionid, this.body);
+        return transactionid;
+    }
+}
 Message.encodeMessage = function(message, transactionid, ip, port){
-    //const type = hexStringToByte(0x0101);
+    //var type = hexStringToByte(0x0101);
     var messageSplit = message.slice(4, 20);
-
+    var startArray = [0x01, 0x01, 0x00, 0x0c];
+    var thisIp = [0x4a, 0x7d, 0xc8, 0x7f];
+    //var thisIp = getByteFromIPArray(ip);
+    var thisPort = [0xd7, 0x34];
+    var thisIPv4 = 0x01;
+    var thisReserve = 0x00;
+    var thisAttrlen = 0x08;
+    var thisAttrType = 0x01;
+    var bytes = [thisReserve, thisAttrType, 0x00, thisAttrlen, thisReserve, thisIPv4];
+    for (let index = 0; index < thisPort.length; index++) {
+        bytes.push(thisPort[index]);
+    }
+    for (let index = 0; index < thisIp.length; index++) {
+        bytes.push(thisIp[index])
+    }
+    msg1 = Buffer.from(bytes)
+    arrmsg = [Buffer.from(startArray), messageSplit, msg1]
 }
 
 
