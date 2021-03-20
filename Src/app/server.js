@@ -25,7 +25,7 @@ clients.broadcast = function (data, except) {
 }
 
 const requestListener = function (req, res) {
-    console.log("URL: " + req.url)
+    //console.log("URL: " + req.url)
     switch (req.url) {
         case"/":
             res.setHeader("Content-Type", "text/html");
@@ -71,7 +71,8 @@ wsServer.on('request', function (request) {
         let msg = JSON.parse(message.utf8Data);
         switch (msg.code) {
             case 1:
-                console.log("New client added to broadcast list: ")
+                clients.push(connection);
+                console.log("New client added to broadcast list, IP:" + connection.remoteAddress)
                 let return_msg = JSON.stringify({
                     code: 1,
                     message:"General Kenobi"})
@@ -80,6 +81,7 @@ wsServer.on('request', function (request) {
     });
 
     connection.on('close', function (connection) {
-        // close user connection
+        console.log("Client disconnected, IP: " + connection.remoteAddress)
+        clients.splice(clients.indexOf(connection),1)
     });
 });

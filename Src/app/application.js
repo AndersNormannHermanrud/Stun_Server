@@ -30,7 +30,7 @@ const app = Vue.createApp({
                             document.getElementById("receive").value = msg.message;
                             break
                         default:
-                            document.getElementById("receive").value = msg.message + " could not parse";
+                            break
                     }
                 });
             }
