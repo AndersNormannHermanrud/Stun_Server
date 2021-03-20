@@ -53,11 +53,6 @@ fs.readFile(__dirname + "/application.js")
     .then(contents => {
         applicationFile = contents;
     })
-fs.readFile(__dirname + "/bundle.js")
-    .then(contents => {
-        bundleFile = contents;
-    })
-
 
 server.listen(port, host, () => {
     console.log(`Server is running on http://${host}:${port}`);
