@@ -19,9 +19,16 @@ let WebSocketServer = ws.server;
 clients.broadcast = function (data, except) {
     for (let sock of this) {
         if (sock !== except) {
-            sock.write(data);
+            sock.send(data);
         }
     }
+}
+clients.get_ip = function (data, except){
+    let ip = [];
+    for(let c of this){
+        ip.push(c.remoteAddress)
+    }
+    return ip;
 }
 
 const requestListener = function (req, res) {
@@ -70,13 +77,22 @@ wsServer.on('request', function (request) {
     connection.on('message', function (message) {
         let msg = JSON.parse(message.utf8Data);
         switch (msg.code) {
-            case 1:
-                clients.push(connection);
-                console.log("New client added to broadcast list, IP:" + connection.remoteAddress)
+            case 1: //Client wants connection and server info
+                console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.port)
+                let broad_msg =JSON.stringify({
+                    code: 2,
+                    ip: connection.remoteAddress,
+                    port:connection.remotePort,
+                    message: "New client connected"
+                });
+                let client_ip = clients.get_ip();
                 let return_msg = JSON.stringify({
                     code: 1,
-                    message:"General Kenobi"})
+                    clients: client_ip,
+                    message:"Connected"});
+                clients.broadcast(broad_msg);
                 connection.send(return_msg)
+                clients.push(connection);
         }
     });
 

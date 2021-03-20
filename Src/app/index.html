@@ -9,11 +9,15 @@
 <div id="app">
     <div id="grid">
         <textarea id="receive"></textarea>
+        <ul id="connected_users">
+            <li>Connected users</li>
+            <li v-for="user in connected_users">{{user}}</li>
+        </ul>
         <textarea id="send"></textarea>
-        <button @click="openWebSocketConnection">Open websocketConnection</button>
     </div>
 </div>
 <script src="application.js"></script>
 <script>const mountedApp = app.mount('#app')</script>
+<script></script>
 </body>
 </html>
