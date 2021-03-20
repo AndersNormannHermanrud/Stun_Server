@@ -9,10 +9,18 @@ const app = Vue.createApp({
                 username: this.username, time_stamp: this.time_stamp
             }],
             socket: undefined,
-            connected_users: ["empty ip"]
+            connected_users: []
         }
     },
     methods: {
+        setUserName(){
+            name = document.getElementById("setUsernameField").value
+            this.username = name;
+            this.socket.send(JSON.stringify({
+                code: 3,//Change username
+                data: name
+            }))
+        }
     },
     computed: {},
     created() {
@@ -27,16 +35,14 @@ const app = Vue.createApp({
                 }))
             });
             this.socket.addEventListener("message", function (message) {
-                document.getElementById("send").value = "message received";
                 let msg = JSON.parse(message.data)
                 switch (msg.code) {
                     case 1: //Connected to server, receive server info
                         vm.connected_users = msg.clients;
-                        document.getElementById("receive").value = msg.message;
+                        document.getElementById("ip").value = msg.message;
                         break
-                    case 2: //New (other) client available
-                        vm.connected_users.push(msg.ip)
-                        break
+                    case 2:
+                        vm.rooms = msg.rooms;
                     default:
                         break
                 }

@@ -8,12 +8,16 @@
 <body>
 <div id="app">
     <div id="grid">
-        <textarea id="receive"></textarea>
+        <textarea rows="1" cols="20" id="setUsernameField" :click="setUserName"></textarea>
+        <textarea id="ip"></textarea>
+        <ul id="rooms">
+            <li>Rooms</li>
+            <li v-for="room in rooms">{{room}}</li>
+        </ul>
         <ul id="connected_users">
             <li>Connected users</li>
             <li v-for="user in connected_users">{{user}}</li>
         </ul>
-        <textarea id="send"></textarea>
     </div>
 </div>
 <script src="application.js"></script>

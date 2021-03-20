@@ -3,33 +3,58 @@ const http = require("http");
 const ws = require('websocket')
 const fs = require('fs').promises;
 const host = 'localhost';
-
-//Websocket codes
-const newClient = 1;
-
 const port = 80;
 
-let indexFile;
-let applicationFile;
-let bundleFile;
 
-let clients = [];
-let WebSocketServer = ws.server;
+class Client{
+    constructor(connection, name) {//TODO add more features
+        this.ip = connection.remoteAddress;
+        this.name = name;
+        this.connection = connection;
+    }
 
-clients.broadcast = function (data, except) {
-    for (let sock of this) {
-        if (sock !== except) {
-            sock.send(data);
+    send(msg){
+        this.connection.send(msg);
+    }
+
+    findClientByConnection(connection){
+        if(this.connection===connection){
+            return this
         }
     }
 }
-clients.get_ip = function (data, except){
-    let ip = [];
-    for(let c of this){
-        ip.push(c.remoteAddress)
+
+class ClientList {
+    constructor() {
+        this.clients = [];
     }
-    return ip;
+
+    push(client) {
+        this.clients.push(client);
+    }
+
+    broadcast(data) {
+        for (let client of this.clients) {
+                client.send(data);
+        }
+    }
+
+    get_ip() {
+        let ip = [];
+        for (let c of this.clients) {
+            ip.push(c.ip)
+        }
+        return ip;
+    }
 }
+
+let indexFile;
+let applicationFile;
+
+let clients = new ClientList();
+let WebSocketServer = ws.server;
+
+let rooms = ["Planning poker", "Football talk", "Meetings", "Study group"] //Todo, make rooms classes
 
 const requestListener = function (req, res) {
     //console.log("URL: " + req.url)
@@ -51,6 +76,7 @@ const requestListener = function (req, res) {
     }
 }
 
+//Reading files into memory for faster sending
 const server = http.createServer(requestListener);
 fs.readFile(__dirname + "/index.html")
     .then(contents => {
@@ -78,26 +104,32 @@ wsServer.on('request', function (request) {
         let msg = JSON.parse(message.utf8Data);
         switch (msg.code) {
             case 1: //Client wants connection and server info
-                console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.port)
-                let broad_msg =JSON.stringify({
-                    code: 2,
-                    ip: connection.remoteAddress,
-                    port:connection.remotePort,
-                    message: "New client connected"
-                });
+                console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
+                clients.push(new Client(connection, ""));
                 let client_ip = clients.get_ip();
                 let return_msg = JSON.stringify({
-                    code: 1,
+                    code: 1,    //Notify client of all connections
                     clients: client_ip,
-                    message:"Connected"});
-                clients.broadcast(broad_msg);
-                connection.send(return_msg)
-                clients.push(connection);
+                    message: "Ip adressess of all users"
+                });
+                clients.broadcast(return_msg);
+                let room_msg = JSON.stringify({
+                    code: 2,    //Info when joining, rooms etc
+                    rooms: rooms
+                });
+                connection.send(room_msg);
         }
     });
 
     connection.on('close', function (connection) {
         console.log("Client disconnected, IP: " + connection.remoteAddress)
-        clients.splice(clients.indexOf(connection),1)
+        clients.splice(clients.indexOf(connection.remoteAddress), 1)
+        let client_ip = clients.get_ip();
+        let return_msg = JSON.stringify({
+            code: 1,//Notify client of all connections
+            clients: client_ip,
+            message: "Ip adressess of all users"
+        });
+        clients.broadcast(return_msg);
     });
 });
