@@ -51,10 +51,11 @@ Messsage.decodeMessage = function (message){
     }
 }
 Message.encodeMessage = function(message, transactionid, ip, port){
-    //const type = hexStringToByte(0x0101);
+    //var type = hexStringToByte(0x0101);
     var messageSplit = message.slice(4, 20);
     var startArray = [0x01, 0x01, 0x00, 0x0c];
     var thisIp = [0x4a, 0x7d, 0xc8, 0x7f];
+    //var thisIp = getByteFromIPArray(ip);
     var thisPort = [0xd7, 0x34];
     var thisIPv4 = 0x01;
     var thisReserve = 0x00;
