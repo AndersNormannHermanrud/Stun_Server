@@ -11,6 +11,7 @@ const port = 80;
 
 let indexFile;
 let applicationFile;
+let bundleFile;
 
 let clients = [];
 let WebSocketServer = ws.server;
@@ -34,10 +35,15 @@ const requestListener = function (req, res) {
             break
         case "/application.js":
             res.setHeader("Content-Type", "text/javascript");
-            console.log("Sending js script")
+            console.log("Sending application.js")
             res.writeHead(200);
             res.end(applicationFile)
             break
+        case "/bundle.js":
+            res.setHeader("Content-Type", "text/javascript");
+            console.log("Sending bundle.js")
+            res.writeHead(200);
+            res.end(applicationFile)
         default:
             break
     }
@@ -52,6 +58,10 @@ fs.readFile(__dirname + "/application.js")
     .then(contents => {
         applicationFile = contents;
     })
+fs.readFile(__dirname + "/bundle.js")
+    .then(contents => {
+        bundleFile = contents;
+    })
 
 
 server.listen(port, host, () => {
@@ -64,7 +74,7 @@ wsServer = new WebSocketServer({
 });
 
 // WebSocket server
-wsServer.on('request', function (request, socket) {
+wsServer.on('request', function (request) {
     let connection = request.accept(null, request.origin);
 
     connection.on('message', function (message) {

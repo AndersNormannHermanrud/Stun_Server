@@ -1,3 +1,4 @@
+Ws = require("websocket").client
 const app = Vue.createApp({
     data() {
         return {
@@ -14,15 +15,16 @@ const app = Vue.createApp({
     methods: {
         openWebSocketConnection(){
             if(this.socket === undefined) {
-                this.socket = new WebSocket('ws://localhost:80');
+                this.socket = new Ws();
                 //Socket events
-                this.socket.onopen = () => this.socket.send(JSON.stringify({
+                this.socket.on("open",function (){
+                    this.socket.send(JSON.stringify({
                     code: 1,
                     message: this.socket.url
-                }))
-                this.socket.on("message", function (message) {
+                }))});
+                this.socket.on("message",function (message) {
                     document.getElementById("send").value = "message recieved";
-                    msg = JSON.parse(message.utf8Data)
+                    let msg = JSON.parse(message.utf8Data)
                     switch (msg.code){
                         case 1:
                             document.getElementById("receive").value = msg.message;
