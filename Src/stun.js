@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const util = require('util');
 const Message = require('./Message');
-const net = require('dgram')
+const net = require('dgram');
 const socket = net.createSocket('udp4');
 
 socket.on('message', (message, rinfo)=>{
@@ -12,7 +12,7 @@ socket.on('message', (message, rinfo)=>{
     const client = net.createSocket('udp4');
     client.send(rMessage, rinfo.port, rinfo.address);
     console.log(rMessage);
-})
+});
 
 
 /* function Server(options) {
