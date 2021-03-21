@@ -26,7 +26,7 @@ const app = Vue.createApp({
     computed: {
         displayNames: function () {
             let display = [];
-            for(let client in this.connected_users) {
+            for (let client in this.connected_users) {
                 name = client.name;
                 if (name !== "") {
                     display.push(name);
@@ -54,7 +54,8 @@ const app = Vue.createApp({
                         console.log("Recieving user data")
                         vm.connected_users = [];
                         for (let m in msg.data) {
-                            vm.connected_users.push(Client.clientFromJson(m))
+                            let c = JSON.parse(m);
+                            vm.connected_users.push(new Client(c.ip, c.name));
                         }
                         vm.connected_users = msg.data;
                         break
