@@ -22,27 +22,29 @@ const requestListener = function (req, res) {
     switch (req.url) {
         case"/":
             res.setHeader("Content-Type", "text/html");
-            console.log("Sending html file")
+            console.log("Sending html file");
             res.writeHead(200);
             res.end(indexFile, applicationFile);
             break
         case "/application.js":
             res.setHeader("Content-Type", "text/javascript");
-            console.log("Sending application.js")
+            console.log("Sending application.js");
             res.writeHead(200);
-            res.end(applicationFile)
+            res.end(applicationFile);
             break
         default:
-            console.log("url: " + req.url + "\tpathname: " + req.pathname)
+            let urlSplit = req.url.split("/");
+            let filename = urlSplit[urlSplit.length - 1];
+            console.log("url: " + req.url + "\tfilename: " + filename);
             for (let comp in components) {
-                if (comp.name === req.pathname) {
+                if (comp.name === filename) {
                     res.setHeader("Content-Type", "text/javascript");
                     console.log("Sending " + comp.name);
                     res.writeHead(200);
                     res.end(comp.file);
                 }
             }
-            break
+            break;
     }
 }
 
@@ -56,7 +58,8 @@ fs.readFile(__dirname + "/application.js")
     .then(contents => {
         applicationFile = contents;
     })
-components = readFiles("components");
+components = readFiles("app/components/")
+
 
 server.listen(port, host, () => {
     console.log(`Server is running on http://${host}:${port}`);
@@ -110,21 +113,25 @@ wsServer.on('request', function (request) {
 });
 
 //For reading all components
-function readFiles(dirname, onError) {
-    let files = [];
-    fs.readdir(dirname, function (err, filenames) {
-        if (err) {
-            onError(err);
-            return;
-        }
-        filenames.forEach(function (filename) {
-            fs.readFile(__dirname + "/application.js")
-                .then(contents => {
-                    files.push(new File(filename, contents));
-                })
+function readFiles(dir, processFile) {
+    let myFiles = [];
+    fs.readdir(dir)
+        .then(namesNotString => { //pathAllNames is "pathAllNames/file1,file2,...,fileN"
+            let pathAllName = namesNotString.toString();
+            let files = pathAllName.split(",")
+            console.log("Reading directory, found files: " + pathAllName)
+            for(let index in files) {
+                let file = files[index];
+                let directory = __dirname + "\\components\\" + file;
+                console.log("Trying to read file: " + directory)
+                fs.readFile(directory)
+                    .then(contents => {
+                        console.log("Reading file: " + file + "from: " + directory)
+                        myFiles.push(new File(file, contents));
+                    });
+            }
         });
-    });
-    return files;
+    return myFiles;
 }
 
 class File {
