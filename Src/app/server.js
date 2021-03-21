@@ -93,7 +93,7 @@ wsServer.on('request', function (request) {
         switch (msg.code) {
             case 1: //Client wants connection and server info
                 console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
-                clients.push(new Client(connection, ""));
+                clients.push(new Client(connection, "unnamed"));
                 clients.broadcast(update_clients_message());
                 let room_msg = JSON.stringify({
                     code: 2,    //Info when joining, rooms etc

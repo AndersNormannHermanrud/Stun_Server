@@ -5,7 +5,7 @@ app.component('Client',{
     },
     template: {},
     methods: {
-        Client(ip,name){
+        constructor(ip,name){
             this.ip = ip;
             this.name = name;
         }

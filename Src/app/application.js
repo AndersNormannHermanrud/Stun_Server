@@ -37,10 +37,10 @@ const app = Vue.createApp({
         }
     },
     components:{
-        'Client': Client,
+        //'Client': Client,
         //'dialogue-display': dialogueDisplay
     },
-    created() {
+    mounted() {
         let vm = this;
         if (this.socket === undefined) {
             this.socket = new WebSocket('ws://localhost:80');

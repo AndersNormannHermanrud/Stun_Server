@@ -1,5 +1,5 @@
 class Client{
-    constructor(connection, name) {//TODO add more features
+    constructor(connection, name) {
         this.ip = connection.remoteAddress;
         this.name = name;
         this.connection = connection;
@@ -9,3 +9,4 @@ class Client{
         this.connection.send(msg);
     }
 }
+module.exports = Client
