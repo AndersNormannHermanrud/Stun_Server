@@ -1,4 +1,4 @@
-export default class Client{
+class Client{
     constructor(connection, name) {//TODO add more features
         this.ip = connection.remoteAddress;
         this.name = name;

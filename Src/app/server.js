@@ -66,13 +66,7 @@ wsServer.on('request', function (request) {
             case 1: //Client wants connection and server info
                 console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
                 clients.push(new Client(connection, ""));
-                let client_ip = clients.get_ip();
-                let return_msg = JSON.stringify({
-                    code: 1,    //Notify client of all connections
-                    data: client_ip,
-                    message: "Ip adressess of all users"
-                });
-                clients.broadcast(return_msg);
+                clients.broadcast(update_clients_message());
                 let room_msg = JSON.stringify({
                     code: 2,    //Info when joining, rooms etc
                     data: rooms
@@ -82,7 +76,8 @@ wsServer.on('request', function (request) {
             case 3: //client changing username
                 console.log(connection.remoteAddress + " is changing username to " + msg.data);
                 let c = clients.indexOf(connection);
-                clients.clients[c].name = msg.data;
+                clients.set_name(msg.name,connection);
+                clients.broadcast(update_clients_message())
                 break;
         }
     });
@@ -90,12 +85,15 @@ wsServer.on('request', function (request) {
     connection.on('close', function (connection) {
         console.log("Client disconnected, IP: " + connection.remoteAddress)
         clients.removeAt(clients.indexOf(connection.remoteAddress))
-        let client_ip = clients.get_ip();
-        let return_msg = JSON.stringify({
+        clients.broadcast(update_clients_message());
+    });
+
+    function update_clients_message() {
+        return JSON.stringify({
             code: 1,//Notify client of all connections
-            data: client_ip,
+            data: clients.get_data,
             message: "Ip adressess of all users"
         });
-        clients.broadcast(return_msg);
-    });
+    }
 });
+
