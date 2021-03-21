@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <title>P2P through stun</title>
+    <!-- Import Styles -->
+    <link rel="stylesheet" href="./app/css.css" />
     <meta charset="UTF-8">
+    <!-- import Vue.js -->
     <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
 </head>
 <body>
@@ -18,6 +21,7 @@
             <li>Connected users</li>
             <li v-for="user in displayNames">{{user}}</li>
         </ul>
+        <dialogue-display></dialogue-display>
     </div>
 </div>
 

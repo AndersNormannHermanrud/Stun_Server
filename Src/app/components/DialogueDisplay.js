@@ -1,4 +1,4 @@
-app.component('DialogueDisplay', {
+app.component('dialogue-display', {
     props: {
 
     },
