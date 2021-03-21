@@ -33,6 +33,7 @@ const requestListener = function (req, res) {
             res.end(applicationFile)
             break
         default:
+            console.log("url: " + req.url + "\tpathname: " + req.pathname)
             for (let comp in components) {
                 if (comp.name === req.pathname) {
                     res.setHeader("Content-Type", "text/javascript");
@@ -108,6 +109,7 @@ wsServer.on('request', function (request) {
     }
 });
 
+//For reading all components
 function readFiles(dirname, onError) {
     let files = [];
     fs.readdir(dirname, function (err, filenames) {
