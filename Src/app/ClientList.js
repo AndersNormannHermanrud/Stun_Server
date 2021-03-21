@@ -29,3 +29,4 @@ class ClientList {
         }
     }
 }
+module.exports = ClientList

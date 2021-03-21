@@ -1,63 +1,12 @@
 //We need a small server to manage and send info to the client. Communication between the clients will still be p2p
+const ClientList = require("./ClientList");
+const Client = require("./Client");
 const http = require("http");
 const ws = require('websocket')
 const fs = require('fs').promises;
 const host = 'localhost';
 const port = 80;
 
-
-class Client{
-    constructor(connection, name) {//TODO add more features
-        this.ip = connection.remoteAddress;
-        this.name = name;
-        this.connection = connection;
-    }
-
-    send(msg){
-        this.connection.send(msg);
-    }
-
-    findClientByConnection(connection){
-        if(this.connection===connection){
-            return this
-        }
-    }
-}
-
-class ClientList {
-    constructor() {
-        this.clients = [];
-    }
-
-    push(client) {
-        this.clients.push(client);
-    }
-
-    broadcast(data) {
-        for (let client of this.clients) {
-                client.send(data);
-        }
-    }
-
-    get_ip() {
-        let ip = [];
-        for (let c of this.clients) {
-            ip.push(c.ip)
-        }
-        return ip;
-    }
-
-    indexOf(connection){
-        for(let i = 0; i < this.clients.length;i++){
-            if(this.clients[i].connection === connection)
-                return i;
-        }
-    }
-
-    removeAt(index){
-        this.clients.splice(index,1);
-    }
-}
 
 let indexFile;
 let applicationFile;

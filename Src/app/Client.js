@@ -9,3 +9,4 @@ export default class Client{
         this.connection.send(msg);
     }
 }
+module.exports = Client
