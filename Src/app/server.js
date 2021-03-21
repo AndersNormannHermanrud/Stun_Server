@@ -46,6 +46,17 @@ class ClientList {
         }
         return ip;
     }
+
+    indexOf(connection){
+        for(let i = 0; i < this.clients.length;i++){
+            if(this.clients[i].connection === connection)
+                return i;
+        }
+    }
+
+    removeAt(index){
+        this.clients.splice(index,1);
+    }
 }
 
 let indexFile;
@@ -123,7 +134,7 @@ wsServer.on('request', function (request) {
 
     connection.on('close', function (connection) {
         console.log("Client disconnected, IP: " + connection.remoteAddress)
-        clients.splice(clients.indexOf(connection.remoteAddress), 1)
+        clients.removeAt(clients.indexOf(connection.remoteAddress))
         let client_ip = clients.get_ip();
         let return_msg = JSON.stringify({
             code: 1,//Notify client of all connections

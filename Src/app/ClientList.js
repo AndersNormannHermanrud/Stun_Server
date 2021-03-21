@@ -21,4 +21,11 @@ class ClientList {
         }
         return ip;
     }
+
+    indexOf(connection){
+        for(let i = 0; i < this.clients.length;i++){
+            if(this.clients[i].connection === connection)
+                return i;
+        }
+    }
 }
