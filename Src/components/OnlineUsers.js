@@ -8,7 +8,7 @@ app.component('onlineUsers-list', {
     template:
     /*html*/
         `
-  <div class="undefined">//TODO make fitting css class
+  <div class="onlineUser-container">//TODO make fitting css class
   <h3>Online users:</h3>
     <ul>
       <li v-for="(user, index) in users" :key="index">
