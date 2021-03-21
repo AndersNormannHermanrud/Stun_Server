@@ -10,6 +10,7 @@ const port = 80;
 
 let indexFile;
 let applicationFile;
+let components;
 
 let clients = new ClientList();
 let WebSocketServer = ws.server;
@@ -32,6 +33,14 @@ const requestListener = function (req, res) {
             res.end(applicationFile)
             break
         default:
+            for (let comp in components) {
+                if (comp.name === req.pathname) {
+                    res.setHeader("Content-Type", "text/javascript");
+                    console.log("Sending " + comp.name);
+                    res.writeHead(200);
+                    res.end(comp.file);
+                }
+            }
             break
     }
 }
@@ -46,6 +55,7 @@ fs.readFile(__dirname + "/application.js")
     .then(contents => {
         applicationFile = contents;
     })
+components = readFiles("components");
 
 server.listen(port, host, () => {
     console.log(`Server is running on http://${host}:${port}`);
@@ -76,7 +86,7 @@ wsServer.on('request', function (request) {
             case 3: //client changing username
                 console.log(connection.remoteAddress + " is changing username to " + msg.data);
                 let c = clients.indexOf(connection);
-                clients.set_name(msg.name,connection);
+                clients.set_name(msg.name, connection);
                 clients.broadcast(update_clients_message())
                 break;
         }
@@ -98,3 +108,26 @@ wsServer.on('request', function (request) {
     }
 });
 
+function readFiles(dirname, onError) {
+    let files = [];
+    fs.readdir(dirname, function (err, filenames) {
+        if (err) {
+            onError(err);
+            return;
+        }
+        filenames.forEach(function (filename) {
+            fs.readFile(__dirname + "/application.js")
+                .then(contents => {
+                    files.push(new File(filename, contents));
+                })
+        });
+    });
+    return files;
+}
+
+class File {
+    constructor(name, file) {
+        this.name = name;
+        this.file = file;
+    }
+}
