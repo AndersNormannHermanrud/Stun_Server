@@ -8,10 +8,4 @@ export default class Client{
     send(msg){
         this.connection.send(msg);
     }
-
-    findClientByConnection(connection){
-        if(this.connection===connection){
-            return this
-        }
-    }
 }
