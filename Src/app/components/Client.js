@@ -5,10 +5,16 @@ class ClassClient {
     }
 }
 
+class ClassClients {
+    constructor(clients) {
+        this.clients = clients;
+    }
+}
+
 app.component('Client', {
     props: {
         clients: {
-            type: Array,
+            type: [],
             required: true
         }
     },
@@ -22,19 +28,20 @@ app.component('Client', {
          `
     ,
     methods: {
+            //Shows either the name if the user has one, or its ip
         displayNames() {
             let display = [];
-            for (let i = 0; i < this.clients.length; i++) {
+            for (let i in this.clients) {
                 let c = this.clients[i];
                 let name = c.name;
                 if (name !== "unnamed") {
                     display.push(name);
+                } else {
+                    display.push(c.ip);
                 }
-                display.push(c.ip);
             }
             return display;
         }
     },
-    computed: {
-    },
+    computed: {},
 })

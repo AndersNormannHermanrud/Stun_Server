@@ -103,8 +103,7 @@ wsServer.on('request', function (request) {
                 break
             case 3: //client changing username
                 console.log(connection.remoteAddress + " is changing username to " + msg.data);
-                let c = clients.indexOf(connection);
-                clients.set_name(msg.name, connection);
+                clients.set_name(msg.data, connection);
                 clients.broadcast(update_clients_message())
                 break;
         }
