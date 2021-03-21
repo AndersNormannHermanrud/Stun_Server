@@ -36,7 +36,8 @@ const requestListener = function (req, res) {
             let urlSplit = req.url.split("/");
             let filename = urlSplit[urlSplit.length - 1];
             console.log("url: " + req.url + "\tfilename: " + filename);
-            for (let comp in components) {
+            for (let index in components) {
+                let comp = components[index];
                 if (comp.name === filename) {
                     res.setHeader("Content-Type", "text/javascript");
                     console.log("Sending " + comp.name);
