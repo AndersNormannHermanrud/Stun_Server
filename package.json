@@ -20,5 +20,6 @@
   "dependencies": {
     "websocket": "^1.0.33",
     "browserify": "^17.0.0"
-  }
+  },
+  "devDependencies": {}
 }

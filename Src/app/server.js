@@ -10,6 +10,7 @@ const port = 80;
 
 let indexFile;
 let applicationFile;
+let css;
 let components;
 
 let clients = new ClientList();
@@ -32,6 +33,12 @@ const requestListener = function (req, res) {
             res.writeHead(200);
             res.end(applicationFile);
             break
+        case "/css.css":
+            res.setHeader("Content-Type", "text/css");
+            console.log("Sending css.css");
+            res.writeHead(200);
+            res.end(css);
+            break
         default:
             let urlSplit = req.url.split("/");
             let filename = urlSplit[urlSplit.length - 1];
@@ -45,6 +52,7 @@ const requestListener = function (req, res) {
                     res.end(comp.file);
                 }
             }
+            //res.writeHead(204);
             break;
     }
 }
@@ -59,6 +67,11 @@ fs.readFile(__dirname + "/application.js")
     .then(contents => {
         applicationFile = contents;
     })
+fs.readFile(__dirname + "/css.css")
+    .then(contents => {
+        css = contents;
+    })
+
 components = readFiles("app/components/")
 
 

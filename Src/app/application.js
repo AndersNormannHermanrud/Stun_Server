@@ -36,6 +36,10 @@ const app = Vue.createApp({
             return display;
         }
     },
+    components:{
+        'Client': Client,
+        //'dialogue-display': dialogueDisplay
+    },
     created() {
         let vm = this;
         if (this.socket === undefined) {
