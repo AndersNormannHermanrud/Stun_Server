@@ -14,6 +14,7 @@ const app = Vue.createApp({
     },
     methods: {
         setUserName(){
+            console.log("sending change username request")
             name = document.getElementById("setUsernameField").value
             this.username = name;
             this.socket.send(JSON.stringify({
@@ -31,18 +32,20 @@ const app = Vue.createApp({
             this.socket.addEventListener("open", function () {
                 this.send(JSON.stringify({
                     code: 1,
-                    message: this.url
+                    data: this.url
                 }))
             });
             this.socket.addEventListener("message", function (message) {
                 let msg = JSON.parse(message.data)
                 switch (msg.code) {
-                    case 1: //Connected to server, receive server info
+                    case 1: //Receive info about other user
+                        console.log("Recieving user data")
+                        vm.connected_users = [];
                         vm.connected_users = msg.clients;
-                        document.getElementById("ip").value = msg.message;
+                        document.getElementById("ip").value = msg.data;
                         break
                     case 2:
-                        vm.rooms = msg.rooms;
+                        vm.rooms = msg.data;
                     default:
                         break
                 }

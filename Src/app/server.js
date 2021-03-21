@@ -120,15 +120,21 @@ wsServer.on('request', function (request) {
                 let client_ip = clients.get_ip();
                 let return_msg = JSON.stringify({
                     code: 1,    //Notify client of all connections
-                    clients: client_ip,
+                    data: client_ip,
                     message: "Ip adressess of all users"
                 });
                 clients.broadcast(return_msg);
                 let room_msg = JSON.stringify({
                     code: 2,    //Info when joining, rooms etc
-                    rooms: rooms
+                    data: rooms
                 });
                 connection.send(room_msg);
+                break
+            case 3: //client changing username
+                console.log(connection.remoteAddress + " is changing username to " + msg.data);
+                let c = clients.indexOf(connection);
+                clients.clients[c].name = msg.data;
+                break;
         }
     });
 
@@ -138,7 +144,7 @@ wsServer.on('request', function (request) {
         let client_ip = clients.get_ip();
         let return_msg = JSON.stringify({
             code: 1,//Notify client of all connections
-            clients: client_ip,
+            data: client_ip,
             message: "Ip adressess of all users"
         });
         clients.broadcast(return_msg);
