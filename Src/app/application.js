@@ -13,7 +13,7 @@ const app = Vue.createApp({
         }
     },
     methods: {
-        setUserName(){
+        setUserName() {
             console.log("sending change username request")
             name = document.getElementById("setUsernameField").value
             this.username = name;
@@ -23,9 +23,21 @@ const app = Vue.createApp({
             }))
         }
     },
-    computed: {},
+    computed: {
+        displayNames: function () {
+            let display = [];
+            for(let client in this.connected_users) {
+                name = client.name;
+                if (name !== "") {
+                    display.push(name);
+                }
+                display.push(client.ip);
+            }
+            return display;
+        }
+    },
     created() {
-        var vm = this;
+        let vm = this;
         if (this.socket === undefined) {
             this.socket = new WebSocket('ws://localhost:80');
             //Socket events
@@ -41,8 +53,10 @@ const app = Vue.createApp({
                     case 1: //Receive info about other user
                         console.log("Recieving user data")
                         vm.connected_users = [];
-                        vm.connected_users = msg.clients;
-                        document.getElementById("ip").value = msg.data;
+                        for (let m in msg.data) {
+                            vm.connected_users.push(Client.clientFromJson(m))
+                        }
+                        vm.connected_users = msg.data;
                         break
                     case 2:
                         vm.rooms = msg.data;
@@ -53,3 +67,16 @@ const app = Vue.createApp({
         }
     }
 })
+
+app.component(
+    class Client {
+        constructor(ip, name) {//TODO add more features
+            this.ip = ip;
+            this.name = name;
+        }
+
+        static clientFromJson(json) {
+            let m = JSON.parse(json);
+            return new Client(m.ip, m.name);
+        }
+    })

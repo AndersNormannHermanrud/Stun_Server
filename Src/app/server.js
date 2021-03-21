@@ -89,9 +89,10 @@ wsServer.on('request', function (request) {
     });
 
     function update_clients_message() {
+        let data = clients.get_data();
         return JSON.stringify({
             code: 1,//Notify client of all connections
-            data: clients.get_data,
+            data: data,
             message: "Ip adressess of all users"
         });
     }

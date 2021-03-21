@@ -10,14 +10,13 @@
     <div id="grid">
         <textarea rows="1" cols="20" id="setUsernameField">Username</textarea>
         <button @click="setUserName">Set username</button>
-        <textarea id="ip"></textarea>
         <ul id="rooms">
             <li>Rooms</li>
             <li v-for="room in rooms">{{room}}</li>
         </ul>
         <ul id="connected_users">
             <li>Connected users</li>
-            <li v-for="user in connected_users">{{user}}</li>
+            <li v-for="user in displayNames">{{user}}</li>
         </ul>
     </div>
 </div>
