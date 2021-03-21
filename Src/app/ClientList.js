@@ -5,7 +5,8 @@ class ClientList {
 
     get_data() {
         let data = [];
-        for (let c in this.clients) {
+        for (let i in this.clients) {
+            let c = this.clients[i];
             data.push(JSON.stringify({
                 ip: c.ip,
                 name: c.name

@@ -9,7 +9,7 @@ const app = Vue.createApp({
                 username: this.username, time_stamp: this.time_stamp
             }],
             socket: undefined,
-            connected_users: []
+            allClients: [],
         }
     },
     methods: {
@@ -23,52 +23,39 @@ const app = Vue.createApp({
             }))
         }
     },
-    computed: {
-        displayNames: function () {
-            let display = [];
-            for (let client in this.connected_users) {
-                name = client.name;
-                if (name !== "") {
-                    display.push(name);
-                }
-                display.push(client.ip);
-            }
-            return display;
-        }
-    },
-    components:{
-        //'Client': Client,
+    computed: {},
+    components: {
+        //'client': Client
         //'dialogue-display': dialogueDisplay
     },
     mounted() {
         let vm = this;
-        if (this.socket === undefined) {
-            this.socket = new WebSocket('ws://localhost:80');
-            //Socket events
-            this.socket.addEventListener("open", function () {
-                this.send(JSON.stringify({
-                    code: 1,
-                    data: this.url
-                }))
-            });
-            this.socket.addEventListener("message", function (message) {
-                let msg = JSON.parse(message.data)
-                switch (msg.code) {
-                    case 1: //Receive info about other user
-                        console.log("Recieving user data")
-                        vm.connected_users = [];
-                        for (let m in msg.data) {
-                            let c = JSON.parse(m);
-                            vm.connected_users.push(new Client(c.ip, c.name));
-                        }
-                        vm.connected_users = msg.data;
-                        break
-                    case 2:
-                        vm.rooms = msg.data;
-                    default:
-                        break
-                }
-            });
-        }
+        this.socket = new WebSocket('ws://localhost:80');
+        //Socket events
+        this.socket.addEventListener("open", function () {
+            this.send(JSON.stringify({
+                code: 1,
+                data: this.url
+            }))
+        });
+        this.socket.addEventListener("message", function (message) {
+            let msg = JSON.parse(message.data)
+            switch (msg.code) {
+                case 1: //Receive info about other user
+                    console.log("Recieving user data")
+                    let arr = [];
+                    for (let i in msg.data) {
+                        let d = JSON.parse(msg.data[i]);
+                        arr.push(new ClassClient(d.ip, d.name))
+                    }
+                    vm.allClients = arr;
+                    //vm.$refs.client.setClients(msg.data);//Call method of component that has ref="client"
+                    break
+                case 2:
+                    vm.rooms = msg.data;
+                default:
+                    break
+            }
+        });
     }
 })

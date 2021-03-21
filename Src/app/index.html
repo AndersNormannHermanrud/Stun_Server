@@ -17,11 +17,7 @@
             <li>Rooms</li>
             <li v-for="room in rooms">{{room}}</li>
         </ul>
-        <ul id="connected_users">
-            <li>Connected users</li>
-            <li v-for="user in displayNames">{{user}}</li>
-        </ul>
-        <dialogue-display></dialogue-display>
+        <Client ref="client" v-bind:clients="allClients"></Client>
     </div>
 </div>
 
