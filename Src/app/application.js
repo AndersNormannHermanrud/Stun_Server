@@ -53,6 +53,7 @@ const app = Vue.createApp({
                     break
                 case 2:
                     vm.rooms = msg.data;
+                    break
                 default:
                     break
             }
