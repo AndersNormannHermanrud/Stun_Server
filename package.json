@@ -18,9 +18,9 @@
   },
   "homepage": "https://github.com/AndersNormannHermanrud/Stun_Server#readme",
   "dependencies": {
-    "websocket": "^1.0.33",
     "browserify": "^17.0.0",
-    "vue": "^2.6.12"
+    "vue": "^2.6.12",
+    "websocket": "^1.0.33"
   },
   "devDependencies": {}
 }
