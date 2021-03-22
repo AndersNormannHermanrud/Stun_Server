@@ -23,12 +23,16 @@ app.component('Client', {
         `
         <ul id="connected_users">
             <li>Connected users</li>
-            <li v-for="client in displayNames()">{{client}}</li>
+            <li v-for="client in displayNames()" :click="call({{client}})">{{client}}</li>
         </ul>
          `
     ,
     methods: {
-            //Shows either the name if the user has one, or its ip
+        call(client) {
+
+        },
+
+        //Shows either the name if the user has one, or its ip
         displayNames() {
             let display = [];
             for (let i in this.clients) {
