@@ -13,7 +13,7 @@ body {
     color: #282828;
 }
 
-.button {
+button {
     margin: 30px;
     background-color: #39495c;
     border-radius: 5px;
