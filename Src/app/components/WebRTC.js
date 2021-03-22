@@ -1,0 +1,19 @@
+class WebRTC{
+    constructor() {
+        this.R
+    }
+}
+
+let makingOffer = false;
+
+pc.onnegotiationneeded = async () => {
+    try {
+        makingOffer = true;
+        await pc.setLocalDescription();
+        signaler.send({ description: pc.localDescription });
+    } catch(err) {
+        console.error(err);
+    } finally {
+        makingOffer = false;
+    }
+};

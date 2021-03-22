@@ -9,7 +9,8 @@ class ClientList {
             let c = this.clients[i];
             data.push(JSON.stringify({
                 ip: c.ip,
-                name: c.name
+                name: c.name,
+                id: c.id
             }));
         }
         return data;
@@ -17,6 +18,7 @@ class ClientList {
 
     push(client) {
         this.clients.push(client);
+        client.id = this.clients.length;
     }
 
     broadcast(data) {
@@ -48,6 +50,18 @@ class ClientList {
 
     removeAt(index) {
         this.clients.splice(index, 1);
+    }
+
+    sendToOneUser(target, msgString) {
+        let isUnique = true;
+        let i;
+
+        for (i=0; i < this.clients.length; i++) {
+            if (this.clients[i].username === target) {
+                connectionArray[i].send(msgString);
+                break;
+            }
+        }
     }
 }
 

@@ -1,13 +1,8 @@
 class ClassClient {
-    constructor(ip, name) {
+    constructor(ip, name, id) {
         this.ip = ip;
         this.name = name;
-    }
-}
-
-class ClassClients {
-    constructor(clients) {
-        this.clients = clients;
+        this.id = id;
     }
 }
 
@@ -23,7 +18,7 @@ app.component('Client', {
         `
         <ul id="connected_users">
             <li>Connected users</li>
-            <li v-for="client in displayNames()" :click="call({{client}})">{{client}}</li>
+            <li v-for="client in displayNames()" :click="call(client)">{{client}}</li>
         </ul>
          `
     ,

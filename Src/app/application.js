@@ -4,9 +4,7 @@ const app = Vue.createApp({
             room: undefined,
             username: undefined,
             time_stamp: undefined,
-            rooms: [{
-
-            }],
+            rooms: [{}],
             chat: [{
                 username: this.username, time_stamp: this.time_stamp
             }],
@@ -48,7 +46,7 @@ const app = Vue.createApp({
                     let arr = [];
                     for (let i in msg.data) {
                         let d = JSON.parse(msg.data[i]);
-                        arr.push(new ClassClient(d.ip, d.name))
+                        arr.push(new ClassClient(d.ip, d.name, d.id))
                     }
                     vm.allClients = arr;
                     //vm.$refs.client.setClients(msg.data);//Call method of component that has ref="client"

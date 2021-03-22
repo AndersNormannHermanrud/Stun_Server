@@ -95,16 +95,15 @@ wsServer.on('request', function (request) {
                 console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
                 clients.push(new Client(connection, "unnamed"));
                 clients.broadcast(update_clients_message());
-                let room_msg = JSON.stringify({
+                connection.send(JSON.stringify({
                     code: 2,    //Info when joining, rooms etc
                     data: rooms
-                });
-                connection.send(room_msg);
+                }));
                 break
             case 3: //client changing username
                 console.log(connection.remoteAddress + " is changing username to " + msg.data);
                 clients.set_name(msg.data, connection);
-                clients.broadcast(update_clients_message())
+                clients.broadcast(update_clients_message());
                 break;
         }
     });
@@ -125,12 +124,12 @@ wsServer.on('request', function (request) {
     }
 });
 
-//For reading all components
-function readFiles(dir, processFile) {
+//For reading all components; Currently not adequate for reuse
+function readFiles(dir) {
     let myFiles = [];
     fs.readdir(dir)
-        .then(namesNotString => { //pathAllNames is "pathAllNames/file1,file2,...,fileN"
-            let pathAllName = namesNotString.toString();
+        .then(namesNotString => { //pathAllNames is {'pathAllNames/file1,file2,...,fileN'}
+            let pathAllName = namesNotString.toString();//Some casting to get the file names
             let files = pathAllName.split(",")
             console.log("Reading directory, found files: " + pathAllName)
             for(let index in files) {
