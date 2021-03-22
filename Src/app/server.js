@@ -33,9 +33,9 @@ const requestListener = function (req, res) {
             res.writeHead(200);
             res.end(applicationFile);
             break
-        case "/css.css":
+        case "/style.css":
             res.setHeader("Content-Type", "text/css");
-            console.log("Sending css.css");
+            console.log("Sending style.css");
             res.writeHead(200);
             res.end(css);
             break
@@ -67,7 +67,7 @@ fs.readFile(__dirname + "/application.js")
     .then(contents => {
         applicationFile = contents;
     })
-fs.readFile(__dirname + "/css.css")
+fs.readFile(__dirname + "/style.css")
     .then(contents => {
         css = contents;
     })
