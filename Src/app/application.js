@@ -4,7 +4,9 @@ const app = Vue.createApp({
             room: undefined,
             username: undefined,
             time_stamp: undefined,
-            rooms: [],
+            rooms: [{
+
+            }],
             chat: [{
                 username: this.username, time_stamp: this.time_stamp
             }],
