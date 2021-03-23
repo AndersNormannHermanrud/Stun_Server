@@ -17,8 +17,25 @@ class ClientList {
     }
 
     push(client) {
+        this.setId(client)
         this.clients.push(client);
-        client.id = this.clients.length;
+    }
+
+    setId(client){
+        while(true){
+            let id = Math.floor(Math.random()*100000)
+            let unique = true;
+            for(let c in this.clients){
+                if(c.id === id){
+                    unique = false;
+                    break;
+                }
+            }
+            if(unique){
+                client.id = id;
+                break;
+            }
+        }
     }
 
     broadcast(data) {
