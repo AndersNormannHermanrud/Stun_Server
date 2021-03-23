@@ -1,3 +1,4 @@
+
 `
 For the poor soul that wakes up to this
 
@@ -12,11 +13,14 @@ Har skrevet TODO på det som må gjøres, har tenkt gjøre det jeg når jeg våk
 
 class WebRTC {
     constructor() {
-        this.myUsername = null;
-        this.targetUsername = null;      // To store username of other peer
+        this.socket = null;
+        this.myId = null;
+        this.targetId = null;      // To store username of other peer
         this.myPeerConnection = null;    // RTCPeerConnection
         this.transceiver = null;         // RTCRtpTransceiver
         this.webcamStream = null;        // MediaStream from webcam
+        this.local_video = null;
+        this.rec_video = null;
         this.mediaConstraints = {
             audio: true,            // We want an audio track
             video: {
@@ -27,23 +31,29 @@ class WebRTC {
         };
     }
 
-    invite(evt) {
+    set_config(socket, localVid, recVid, myId){
+        this.socket = socket;
+        this.local_video = localVid;
+        this.rec_video = recVid
+        this.myId = myId;
+    }
+
+    invite(client) {
         if (this.myPeerConnection) {
             alert("You can't start a call because you already have one open!");
         } else {
-            let clickedUsername = evt.target.textContent;
-
-            if (clickedUsername === this.myUsername) {
+            if (client.id === this.myId) {
                 alert("I'm afraid I can't let you talk to yourself. That would be weird.");
                 return;
             }
 
-            this.targetUsername = clickedUsername;
+            this.targetId = client.id;
             this.createPeerConnection();
+            let rec_video = this.rec_video;
 
             navigator.mediaDevices.getUserMedia(this.mediaConstraints)
                 .then(function (localStream) {
-                    document.getElementById("local_video").srcObject = localStream;
+                    rec_video.srcObject = localStream;
                     localStream.getTracks().forEach(track => this.myPeerConnection.addTrack(track, localStream));
                 })
                 .catch(this.handleGetUserMediaError);
@@ -72,11 +82,11 @@ class WebRTC {
         this.myPeerConnection = new RTCPeerConnection({
             iceServers: [     // Information about ICE servers - Use your own!
                 {
-                    urls: "stun:stun.stunprotocol.org" //TODO OUT STUN SERVER
+                    urls: "stun:stun3.l.google.com:19302" //TODO OUT STUN SERVER
                 }
             ]
         });
-//TODO USE OUR STUN SERVER
+        //TODO USE OUR STUN SERVER
 
         //TODO implement all these evets, FUCK
         //Need kok pls
@@ -97,41 +107,50 @@ class WebRTC {
             return this.myPeerConnection.setLocalDescription(offer);
         })
             .then(function () {
-                sendToServer({ //TODO Change to our server
-                    name: myUsername,
-                    target: targetUsername,
+                let data = JSON.stringify({ //TODO Change to our server
+                    name: this.myId,
+                    target: this.targetId,
                     type: "video-offer",
                     sdp: this.myPeerConnection.localDescription
                 });
+                this.socket.send(JSON.stringify({
+                    code: 4,
+                    data: data
+                }))
             })
-            .catch(reportError);
+            .catch(this.reportError);
     }
 
     //TODO change message format
     handleICECandidateEvent(event) {
         if (event.candidate) {
-            sendToServer({
+            let data = JSON.stringify({
                 type: "new-ice-candidate",
-                target: targetUsername,
+                target: this.targetId,
                 candidate: event.candidate
             });
+            this.socket.send(JSON.stringify({
+                code: 4,
+                data: data
+            }))
         }
     }
 
     //TODO change to our media elements
     handleTrackEvent(event) {
-        document.getElementById("received_video").srcObject = event.streams[0];
-        document.getElementById("hangup-button").disabled = false;
+        console.log("Call ended")
+        //document.getElementById("received_video").srcObject = event.streams[0];
+        //document.getElementById("hangup-button").disabled = false;
     }
 
     //Det vi skal gjøre når koblingen brytes
     //TODO fix
     handleRemoveTrackEvent(event) {
-        var stream = document.getElementById("received_video").srcObject;
-        var trackList = stream.getTracks();
+        let stream = document.getElementById("received_video").srcObject;
+        let trackList = stream.getTracks();
 
-        if (trackList.length == 0) {
-            closeVideoCall();
+        if (trackList.length === 0) {
+            this.closeVideoCall();
         }
     }
 
@@ -147,9 +166,9 @@ class WebRTC {
 
     //TODO fix
     handleSignalingStateChangeEvent(event) {
-        switch (myPeerConnection.signalingState) {
+        switch (this.myPeerConnection.signalingState) {
             case "closed":
-                closeVideoCall();
+                this.closeVideoCall();
                 break;
         }
     };
@@ -165,17 +184,22 @@ class WebRTC {
     //TODO fix
     hangUpCall() {
         this.closeVideoCall();
-        sendToServer({//TODO message format
-            name: myUsername,
-            target: targetUsername,
+        let data = JSON.stringify({//TODO message format
+            name: this.myId,
+            target: this.targetId,
             type: "hang-up"
         });
+        this.socket.send(JSON.stringify({
+            code: 4,
+            data: data
+        }))
     }
 
     //TODO maybe fix
     closeVideoCall() {
-        let remoteVideo = document.getElementById("received_video");
-        let localVideo = document.getElementById("local_video");
+        //TODO our video elements
+        //let remoteVideo = document.getElementById("received_video");
+        //let localVideo = document.getElementById("local_video");
 
         if (this.myPeerConnection) {
             this.myPeerConnection.ontrack = null;
@@ -186,7 +210,7 @@ class WebRTC {
             this.myPeerConnection.onsignalingstatechange = null;
             this.myPeerConnection.onicegatheringstatechange = null;
             this.myPeerConnection.onnegotiationneeded = null;
-
+/*
             if (remoteVideo.srcObject) {
                 remoteVideo.srcObject.getTracks().forEach(track => track.stop());
             }
@@ -194,45 +218,51 @@ class WebRTC {
             if (localVideo.srcObject) {
                 localVideo.srcObject.getTracks().forEach(track => track.stop());
             }
-
+*/
             this.myPeerConnection.close();
             this.myPeerConnection = null;
         }
-
+/*
         remoteVideo.removeAttribute("src");
         remoteVideo.removeAttribute("srcObject");
         localVideo.removeAttribute("src");
         remoteVideo.removeAttribute("srcObject");
 
         document.getElementById("hangup-button").disabled = true;//TODO these two lines are program specific
-        this.targetUsername = null;
+ */
+        this.targetId = null;
     }
 
     //Accepts handleICECandidateEvent from another client
     //TODO change message format
     handleNewICECandidateMsg(msg) {
-        var candidate = new RTCIceCandidate(msg.candidate);
+        let candidate = new RTCIceCandidate(msg.candidate);
 
         this.myPeerConnection.addIceCandidate(candidate)
-            .catch(reportError);
+            .catch(this.reportError);
     }
 
+    reportError(){
+        console.log("Error, what to do?")
+    }
+    
     //Accepts inncoming video offers sendt from another client
-    handleVideoOfferMsg(msg) {
-        var localStream = null;
+    handleVideoOfferMsg(data) {
+        let localStream = null;
 
         //TODO Endre til vårt brukernavn
-        targetUsername = msg.name;
-        createPeerConnection();
+        this.targetId = data.id;
+        this.createPeerConnection();
 
-        var desc = new RTCSessionDescription(msg.sdp);
+        let local_video = this.local_video;
+        let desc = new RTCSessionDescription(data.sdp);
 
         this.myPeerConnection.setRemoteDescription(desc).then(function () {
             return navigator.mediaDevices.getUserMedia(this.mediaConstraints);
         })
             .then(function (stream) {
                 localStream = stream;
-                document.getElementById("local_video").srcObject = localStream;
+                local_video.srcObject = localStream;
 
                 localStream.getTracks().forEach(track => this.myPeerConnection.addTrack(track, localStream));
             })
@@ -243,15 +273,18 @@ class WebRTC {
                 return this.myPeerConnection.setLocalDescription(answer);
             })
             .then(function () {
-                var msg = {
-                    name: myUsername, //TODO få inn vår info
-                    target: targetUsername,
+                let msg = {
+                    name: this.myId,
+                    target: this.targetId,
                     type: "video-answer",
                     sdp: this.myPeerConnection.localDescription
                 };
-
-                sendToServer(msg); //TODO endre til vår request, og endre formatet til vårt meldingsystem
+                this.socket.send(JSON.stringify({
+                    code: 4,
+                    data: msg
+                }));
             })
             .catch(this.handleGetUserMediaError);
     }
 }
+module.exports = WebRTC;

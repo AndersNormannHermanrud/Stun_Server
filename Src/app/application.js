@@ -21,7 +21,14 @@ const app = Vue.createApp({
                 code: 3,//Change username
                 data: name
             }))
-        }
+        },
+
+        sendIceRequest(data){
+            this.socket.send(JSON.stringify({
+                code: 99999,
+                data: data
+            }))
+        },
     },
     computed: {},
     components: {
@@ -53,6 +60,8 @@ const app = Vue.createApp({
                     break
                 case 2:
                     vm.rooms = msg.data;
+                    break
+                case 9999999: //Accept ice message
                     break
                 default:
                     break

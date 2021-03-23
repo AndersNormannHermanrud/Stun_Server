@@ -26,21 +26,6 @@ app.component('Client', {
         call(client) {
             console.log("Clicked client: " + client.id)
         },
-
-        //Shows either the name if the user has one, or its ip
-        displayNames() {
-            let display = [];
-            for (let i in this.clients) {
-                let c = this.clients[i];
-                let name = c.name;
-                if (name !== "unnamed") {
-                    display.push(name);
-                } else {
-                    display.push(c.ip);
-                }
-            }
-            return display;
-        },
         displayName(client) {
             let name = client.name;
             if (name !== "unnamed") {

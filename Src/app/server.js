@@ -71,7 +71,6 @@ fs.readFile(__dirname + "/style.css")
     .then(contents => {
         css = contents;
     })
-
 components = readFiles("app/components/")
 
 
