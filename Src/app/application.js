@@ -30,7 +30,7 @@ const app = Vue.createApp({
             }))
         },
         call(client){
-            this.$refs.video.invite(client);
+            this.$refs.video.connectToNewUser(client.id);
         }
 
     },
@@ -38,8 +38,6 @@ const app = Vue.createApp({
     mounted() {
         let vm = this;
         this.socket = new WebSocket('ws://localhost:80');
-        vm.$refs.video.createConnection(this.socket);
-        //Socket events
         this.socket.addEventListener("open", function () {
             this.send(JSON.stringify({
                 code: 1,
@@ -60,26 +58,11 @@ const app = Vue.createApp({
                     break
                 case 2: //Recieving additional data from server (currently only rooms)
                     vm.rooms = msg.data;
-                    vm.$refs.video.set_id(msg.id);
+                    //vm.$refs.video.set_id(msg.id); //TODO fix
                     break
                 case 4: //Accept private (ice) message
                     let data = JSON.parse(msg.data);
                     switch (data.type){
-                        case "video-offer":
-                            console.log("Receiving video offer");
-                            vm.$refs.video.handleVideoOfferMsg(data);
-                            break
-                        case "new-ice-candidate":
-                            console.log("Receiving ice canidate message");
-                            vm.$refs.video.handleNewICECandidateMsg(data);
-                            break
-                        case "video-answer":
-                            console.log("Sending video answer");
-                            break
-                        case "hang-up":
-                            console.log("Other user hung up");
-                            vm.$refs.video.closeVideoCall();
-                            break
                         default:
                             break
                     }
