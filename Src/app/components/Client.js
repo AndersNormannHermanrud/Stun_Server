@@ -18,13 +18,13 @@ app.component('Client', {
         `
         <ul id="connected_users">
             <li>Connected users</li>
-            <li v-for="client in displayNames()" :click="call(client)">{{client}}</li>
+            <li v-for="client in clients">{{displayName(client)}}<button @click="call(client)">Call placeholder</button></li>
         </ul>
          `
     ,
     methods: {
         call(client) {
-
+            console.log("Clicked client: " + client.id)
         },
 
         //Shows either the name if the user has one, or its ip
@@ -40,7 +40,15 @@ app.component('Client', {
                 }
             }
             return display;
-        }
+        },
+        displayName(client) {
+            let name = client.name;
+            if (name !== "unnamed") {
+                return client.name;
+            }
+            return client.ip;
+        },
     },
-    computed: {},
+    computed: {
+    },
 })
