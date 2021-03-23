@@ -3,10 +3,22 @@ app.component('dialogue-display', {
     template:
     /*html*/
         `
-  <div class="dialogue-display">
-    <div class="video-display">
-        <video ref="recvid" id="received-video"></video>
-        <video ref="locvid" id="local-video"></video>
+ <div class="grid-container">
+ 
+    <div class="list-of-rooms">
+        <li v-for="room in rooms">{{room}}</li>
+    </div>
+    
+    <div class="set-user-name-button">
+        <textarea rows="1" cols="20" id="setUsernameField">Username</textarea>
+        <button @click="setUserName">Set Username</button>
+    </div>
+    
+ <div class="dialogue-display">
+      <div class="video-display">
+        <video ref="recvid" id="received-video" autoplay></video>
+        <video ref="locvid" id="local-video" autoplay muted></video>
+      </div>
       </div>
   </div>`,
     data() {
@@ -22,6 +34,9 @@ app.component('dialogue-display', {
                 video.play()
             })
         },
+        setUserName(){
+            this.$emit('set-user-name')
+        }
 
         connectToNewUser(userId, stream) {
             let dd = this;

@@ -7,19 +7,20 @@
     <meta charset="UTF-8">
     <!-- import Vue.js -->
     <script src="https://unpkg.com/vue@next"></script>
-    <script defer src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
 </head>
 <body>
 <div id="app">
     <div id="grid">
-        <textarea rows="1" cols="20" id="setUsernameField">Username</textarea>
-        <button @click="setUserName">Set username</button>
-        <ul id="rooms2">
-            <li>Rooms</li>
-            <li v-for="room in rooms">{{room}}</li>
-        </ul>
-        <dialogue-display id="video" ref="video"></dialogue-display>
-        <Client ref="client" v-bind:clients="allClients"></Client>
+        <dialogue-display ref="video"
+                          :socket="socket"
+                          @set-user-name="setUserName">
+
+        </dialogue-display>
+        <Client ref="client"
+                :clients="allClients"
+                @call-client="call">
+
+        </Client>
     </div>
 </div>
 
