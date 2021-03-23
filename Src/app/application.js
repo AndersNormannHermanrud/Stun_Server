@@ -31,10 +31,6 @@ const app = Vue.createApp({
         },
     },
     computed: {},
-    components: {
-        //'client': Client
-        //'dialogue-display': dialogueDisplay
-    },
     mounted() {
         let vm = this;
         this.socket = new WebSocket('ws://localhost:80');
@@ -55,13 +51,26 @@ const app = Vue.createApp({
                         let d = JSON.parse(msg.data[i]);
                         arr.push(new ClassClient(d.ip, d.name, d.id))
                     }
-                    vm.allClients = arr;
+                    this.allClients = arr;
                     //vm.$refs.client.setClients(msg.data);//Call method of component that has ref="client"
                     break
                 case 2:
                     vm.rooms = msg.data;
                     break
-                case 9999999: //Accept ice message
+                case 4: //Accept private (ice) message
+                    let data = JSON.parse(msg.data);
+                    switch (data.type){
+                        case "video-offer":
+                            vm.$refs.video.handleVideoOfferMsg(msg.data)
+                            break
+                        case "new-ice-candidate":
+                            vm.$refs.video.handleNewICECandidateMsg(msg.data)
+                            break
+                        case "video-answer":
+                            break
+                        default:
+                            break
+                    }
                     break
                 default:
                     break
