@@ -1,9 +1,5 @@
 app.component('dialogue-display', {
     props: {
-        socket: {
-            type: WebSocket,
-            required: true
-        }
     },
     template:
     /*html*/
@@ -16,15 +12,22 @@ app.component('dialogue-display', {
   </div>`,
     data() {
         return {
-            connection: new WebRTC()
+            connection: new WebRTC(),
+            socket: undefined
         }
     },
     methods: {
         invite(client) {
             this.connection.invite(client,);
         },
-        setId(id){
+        setId(id) {
             this.connection.set_id(id);
+        },
+        setSocket(socket) {
+            this.socket = socket;
+        },
+        createConnection() {
+            this.connection.set_config(this.socket, this.$refs.recvid, this.$refs.locvid);
         },
         handleNewICECandidateMsg(data) {
             this.connection.handleNewICECandidateMsg(data);
@@ -32,10 +35,6 @@ app.component('dialogue-display', {
         handleVideoOfferMsg(data) {
             this.connection.handleVideoOfferMsg(data);
         },
-
-    },
-    mounted() {
-        this.connection.set_config(this.socket, this.$refs.recvid, this.$refs.locvid);
     },
 })
 
@@ -59,13 +58,13 @@ class WebRTC {
         };
     }
 
-    set_config(socket, localVid, recVid){
+    set_config(socket, localVid, recVid) {
         this.socket = socket;
         this.local_video = localVid;
         this.rec_video = recVid;
     }
 
-    set_id(id){
+    set_id(id) {
         this.myId = id;
     }
 
@@ -260,7 +259,7 @@ class WebRTC {
             .catch(this.reportError);
     }
 
-    reportError(){
+    reportError() {
         console.log("Error, what to do?")
     }
 

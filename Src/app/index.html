@@ -13,11 +13,11 @@
     <div id="grid">
         <textarea rows="1" cols="20" id="setUsernameField">Username</textarea>
         <button @click="setUserName">Set username</button>
-        <ul id="rooms">
+        <ul id="rooms2">
             <li>Rooms</li>
             <li v-for="room in rooms">{{room}}</li>
         </ul>
-        <dialogue-display ref="video" v-bind:socket="socket"></dialogue-display>
+        <dialogue-display ref="video"></dialogue-display>
         <Client ref="client" v-bind:clients="allClients"></Client>
     </div>
 </div>

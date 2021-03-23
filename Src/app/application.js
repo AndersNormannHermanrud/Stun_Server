@@ -4,7 +4,7 @@ const app = Vue.createApp({
             room: undefined,
             username: undefined,
             time_stamp: undefined,
-            rooms: [{}],
+            rooms: ["Hello","World"],
             chat: [{
                 username: this.username, time_stamp: this.time_stamp
             }],
@@ -22,18 +22,13 @@ const app = Vue.createApp({
                 data: name
             }))
         },
-
-        sendIceRequest(data){
-            this.socket.send(JSON.stringify({
-                code: 99999,
-                data: data
-            }))
-        },
     },
     computed: {},
     mounted() {
         let vm = this;
         this.socket = new WebSocket('ws://localhost:80');
+        vm.$refs.video.setSocket(this.socket);
+        vm.$refs.video.createConnection();
         //Socket events
         this.socket.addEventListener("open", function () {
             this.send(JSON.stringify({
@@ -51,10 +46,9 @@ const app = Vue.createApp({
                         let d = JSON.parse(msg.data[i]);
                         arr.push(new ClassClient(d.ip, d.name, d.id))
                     }
-                    this.allClients = arr;
-                    //vm.$refs.client.setClients(msg.data);//Call method of component that has ref="client"
+                    vm.allClients = arr;
                     break
-                case 2:
+                case 2: //Recieving additional data from server (currently only rooms)
                     vm.rooms = msg.data;
                     break
                 case 4: //Accept private (ice) message
