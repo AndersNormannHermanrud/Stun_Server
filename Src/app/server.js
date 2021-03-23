@@ -25,7 +25,7 @@ const requestListener = function (req, res) {
             res.setHeader("Content-Type", "text/html");
             console.log("Sending html file");
             res.writeHead(200);
-            res.end(indexFile, applicationFile);
+            res.end(indexFile);
             break
         case "/application.js":
             res.setHeader("Content-Type", "text/javascript");
