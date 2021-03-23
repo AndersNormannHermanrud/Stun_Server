@@ -1,4 +1,3 @@
-
 `
 For the poor soul that wakes up to this
 
@@ -10,6 +9,7 @@ Les linken på dypere forklaring på hva alt gjør
 Har skrevet TODO på det som må gjøres, har tenkt gjøre det jeg når jeg våkner, bare få stun serveren til å funke
 
 `
+
 class WebRTC {
     constructor() {
         this.myUsername = null;
@@ -31,7 +31,7 @@ class WebRTC {
         if (this.myPeerConnection) {
             alert("You can't start a call because you already have one open!");
         } else {
-            var clickedUsername = evt.target.textContent;
+            let clickedUsername = evt.target.textContent;
 
             if (clickedUsername === this.myUsername) {
                 alert("I'm afraid I can't let you talk to yourself. That would be weird.");
@@ -39,7 +39,7 @@ class WebRTC {
             }
 
             this.targetUsername = clickedUsername;
-            createPeerConnection();
+            this.createPeerConnection();
 
             navigator.mediaDevices.getUserMedia(this.mediaConstraints)
                 .then(function (localStream) {
@@ -80,6 +80,7 @@ class WebRTC {
 
         //TODO implement all these evets, FUCK
         //Need kok pls
+        //Sets the event methods for the different necessary events
         this.myPeerConnection.onicecandidate = this.handleICECandidateEvent;
         this.myPeerConnection.ontrack = this.handleTrackEvent;
         this.myPeerConnection.onnegotiationneeded = this.handleNegotiationNeededEvent;
@@ -123,12 +124,96 @@ class WebRTC {
         document.getElementById("hangup-button").disabled = false;
     }
 
+    //Det vi skal gjøre når koblingen brytes
+    //TODO fix
+    handleRemoveTrackEvent(event) {
+        var stream = document.getElementById("received_video").srcObject;
+        var trackList = stream.getTracks();
+
+        if (trackList.length == 0) {
+            closeVideoCall();
+        }
+    }
+
+    //TODO fix
+    handleICEConnectionStateChangeEvent(event) {
+        switch (this.myPeerConnection.iceConnectionState) {
+            case "closed":
+            case "failed":
+                this.closeVideoCall();
+                break;
+        }
+    }
+
+    //TODO fix
+    handleSignalingStateChangeEvent(event) {
+        switch (myPeerConnection.signalingState) {
+            case "closed":
+                closeVideoCall();
+                break;
+        }
+    };
+
+    //TODO fix
+    handleICEGatheringStateChangeEvent(event) {
+        // Our sample just logs information to console here,
+        // but you can do whatever you need.
+    }
+
+
+    //Hangs up the call
+    //TODO fix
+    hangUpCall() {
+        this.closeVideoCall();
+        sendToServer({//TODO message format
+            name: myUsername,
+            target: targetUsername,
+            type: "hang-up"
+        });
+    }
+
+    //TODO maybe fix
+    closeVideoCall() {
+        let remoteVideo = document.getElementById("received_video");
+        let localVideo = document.getElementById("local_video");
+
+        if (this.myPeerConnection) {
+            this.myPeerConnection.ontrack = null;
+            this.myPeerConnection.onremovetrack = null;
+            this.myPeerConnection.onremovestream = null;
+            this.myPeerConnection.onicecandidate = null;
+            this.myPeerConnection.oniceconnectionstatechange = null;
+            this.myPeerConnection.onsignalingstatechange = null;
+            this.myPeerConnection.onicegatheringstatechange = null;
+            this.myPeerConnection.onnegotiationneeded = null;
+
+            if (remoteVideo.srcObject) {
+                remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+            }
+
+            if (localVideo.srcObject) {
+                localVideo.srcObject.getTracks().forEach(track => track.stop());
+            }
+
+            this.myPeerConnection.close();
+            this.myPeerConnection = null;
+        }
+
+        remoteVideo.removeAttribute("src");
+        remoteVideo.removeAttribute("srcObject");
+        localVideo.removeAttribute("src");
+        remoteVideo.removeAttribute("srcObject");
+
+        document.getElementById("hangup-button").disabled = true;//TODO these two lines are program specific
+        this.targetUsername = null;
+    }
+
     //Accepts handleICECandidateEvent from another client
     //TODO change message format
     handleNewICECandidateMsg(msg) {
         var candidate = new RTCIceCandidate(msg.candidate);
 
-        myPeerConnection.addIceCandidate(candidate)
+        this.myPeerConnection.addIceCandidate(candidate)
             .catch(reportError);
     }
 
@@ -143,21 +228,21 @@ class WebRTC {
         var desc = new RTCSessionDescription(msg.sdp);
 
         this.myPeerConnection.setRemoteDescription(desc).then(function () {
-            return navigator.mediaDevices.getUserMedia(mediaConstraints);
+            return navigator.mediaDevices.getUserMedia(this.mediaConstraints);
         })
-            .then(function(stream) {
+            .then(function (stream) {
                 localStream = stream;
                 document.getElementById("local_video").srcObject = localStream;
 
                 localStream.getTracks().forEach(track => this.myPeerConnection.addTrack(track, localStream));
             })
-            .then(function() {
+            .then(function () {
                 return this.myPeerConnection.createAnswer();
             })
-            .then(function(answer) {
+            .then(function (answer) {
                 return this.myPeerConnection.setLocalDescription(answer);
             })
-            .then(function() {
+            .then(function () {
                 var msg = {
                     name: myUsername, //TODO få inn vår info
                     target: targetUsername,
@@ -167,6 +252,6 @@ class WebRTC {
 
                 sendToServer(msg); //TODO endre til vår request, og endre formatet til vårt meldingsystem
             })
-            .catch(handleGetUserMediaError);
+            .catch(this.handleGetUserMediaError);
     }
 }
