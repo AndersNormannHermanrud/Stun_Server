@@ -33,11 +33,7 @@ app.component('dialogue-display', {
             rec_video: null,
             mediaConstraints: {
                 audio: true,
-                video: {
-                    aspectRatio: {
-                        ideal: 1.333333
-                    }
-                }
+                video: true
             },
         }
     },
@@ -64,7 +60,7 @@ app.component('dialogue-display', {
                     .catch(this.handleGetUserMediaError);
             }
         },
-        setUserName(){
+        setUserName() {
             this.$emit('set-user-name')
         },
 
@@ -213,8 +209,7 @@ app.component('dialogue-display', {
 
         handleTrackEvent(event) {
             console.log("Call ended")
-            //document.getElementById("received_video").srcObject = event.streams[0];
-            //document.getElementById("hangup-button").disabled = false;
+            this.$refs.recvid.srcObject = event.streams[0];
         },
 
         //Det vi skal gjøre når koblingen brytes
@@ -248,8 +243,6 @@ app.component('dialogue-display', {
         },
 
         handleICEGatheringStateChangeEvent(event) {
-            // Our sample just logs information to console here,
-            // but you can do whatever you need.
         },
 
         hangUpCall() {
@@ -267,8 +260,8 @@ app.component('dialogue-display', {
 
         closeVideoCall() {
             //TODO our video elements
-            //let remoteVideo = document.getElementById("received_video");
-            //let localVideo = document.getElementById("local_video");
+            let remoteVideo = this.$refs.recvid.srcObject;
+            let localVideo = this.$refs.recvid.srcObject;
 
             if (this.myPeerConnection) {
                 this.myPeerConnection.ontrack = null;
@@ -279,31 +272,27 @@ app.component('dialogue-display', {
                 this.myPeerConnection.onsignalingstatechange = null;
                 this.myPeerConnection.onicegatheringstatechange = null;
                 this.myPeerConnection.onnegotiationneeded = null;
-                /*
-                            if (remoteVideo.srcObject) {
-                                remoteVideo.srcObject.getTracks().forEach(track => track.stop());
-                            }
 
-                            if (localVideo.srcObject) {
-                                localVideo.srcObject.getTracks().forEach(track => track.stop());
-                            }
-                */
+                if (remoteVideo.srcObject) {
+                    remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+                }
+
+                if (localVideo.srcObject) {
+                    localVideo.srcObject.getTracks().forEach(track => track.stop());
+                }
+
                 this.myPeerConnection.close();
                 this.myPeerConnection = null;
             }
-            /*
                     remoteVideo.removeAttribute("src");
                     remoteVideo.removeAttribute("srcObject");
                     localVideo.removeAttribute("src");
                     remoteVideo.removeAttribute("srcObject");
-
-                    document.getElementById("hangup-button").disabled = true;//TODO these two lines are program specific
-             */
             this.targetId = null;
         },
 
         reportError() {
-            console.log("Error, what to do?")
+            console.log("Error, uncaught error in the DialogueDisplay?")
         },
 
     },
