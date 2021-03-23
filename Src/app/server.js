@@ -96,7 +96,8 @@ wsServer.on('request', function (request) {
                 clients.broadcast(update_clients_message());
                 connection.send(JSON.stringify({
                     code: 2,    //Info when joining, rooms etc
-                    data: rooms
+                    data: rooms,
+                    id: clients.get_id_of(connection)
                 }));
                 break
             case 3: //client changing username
@@ -105,8 +106,13 @@ wsServer.on('request', function (request) {
                 clients.broadcast(update_clients_message());
                 break;
             case 4: //Client wants to call comebody, Do ICE server functionality
-
-
+                let message = JSON.parse(msg.data);
+                let returnMsg = JSON.stringify({
+                    code: 4,
+                    data: msg.data
+                })
+                console.log("Sending to: " +  message.target);
+                clients.sendToOneUser(message.target, returnMsg);
                 break
             default:
                 break
@@ -137,7 +143,7 @@ function readFiles(dir) {
             let pathAllName = namesNotString.toString();//Some casting to get the file names
             let files = pathAllName.split(",")
             console.log("Reading directory, found files: " + pathAllName)
-            for(let index in files) {
+            for (let index in files) {
                 let file = files[index];
                 let directory = __dirname + "\\components\\" + file;
                 console.log("Trying to read file: " + directory)

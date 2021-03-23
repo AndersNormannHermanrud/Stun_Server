@@ -35,6 +35,11 @@ class ClientList {
         return ip;
     }
 
+    get_id_of(connection) {
+        let i = this.indexOf(connection);
+        return this.clients[i].id;
+    }
+
     set_name(name, connection) {
         let i = this.indexOf(connection);
         if (i !== undefined)
@@ -52,13 +57,10 @@ class ClientList {
         this.clients.splice(index, 1);
     }
 
-    sendToOneUser(target, msgString) {
-        let isUnique = true;
-        let i;
-
-        for (i=0; i < this.clients.length; i++) {
-            if (this.clients[i].username === target) {
-                connectionArray[i].send(msgString);
+    sendToOneUser(targetId, msg) {
+        for (let i = 0; i < this.clients.length; i++) {
+            if (this.clients[i].id === targetId) {
+                this.clients[i].connection.send(msg);
                 break;
             }
         }

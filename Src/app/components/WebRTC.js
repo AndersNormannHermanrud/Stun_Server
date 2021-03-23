@@ -1,3 +1,4 @@
+`
 class WebRTC {
     constructor() {
         this.socket = null;
@@ -38,13 +39,15 @@ class WebRTC {
             }
 
             this.targetId = client.id;
+            let myPeerConnection = this.myPeerConnection;
             this.createPeerConnection();
             let rec_video = this.rec_video;
+
 
             navigator.mediaDevices.getUserMedia(this.mediaConstraints)
                 .then(function (localStream) {
                     rec_video.srcObject = localStream;
-                    localStream.getTracks().forEach(track => this.myPeerConnection.addTrack(track, localStream));
+                    localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
                 })
                 .catch(this.handleGetUserMediaError);
         }
@@ -264,4 +267,4 @@ class WebRTC {
             .catch(this.handleGetUserMediaError);
     }
 }
-module.exports = WebRTC;
+module.exports = WebRTC;`
