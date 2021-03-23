@@ -39,8 +39,6 @@ app.component('dialogue-display', {
                     }
                 }
             },
-
-
         }
     },
     methods: {
@@ -68,7 +66,7 @@ app.component('dialogue-display', {
         },
         setUserName(){
             this.$emit('set-user-name')
-        }
+        },
 
         set_id(id) {
             this.myId = id;

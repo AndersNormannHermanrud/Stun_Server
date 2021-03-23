@@ -30,7 +30,7 @@ const app = Vue.createApp({
             }))
         },
         call(client){
-            this.$ref.video.invite(client);
+            this.$refs.video.invite(client);
         }
 
     },

@@ -18,9 +18,10 @@ app.component('Client', {
         `
 <div class="grid-container">
     <div class="list-of-connected-users">
+    
         <ul id="connected_users">
             <li>Connected users</li>
-            <li v-for="client in clients">{{displayName(client)}}
+            <li v-for="(client, index) in clients" :key="index">{{displayName(client)}}
             <button @click="call(client)">Call placeholder</button>
             </li>
         </ul>
@@ -30,7 +31,7 @@ app.component('Client', {
     ,
     methods: {
         call(client) {
-            this.$root.$refs.video.invite(client);
+            this.$emit('call-client', client);
         },
         displayName(client) {
             let name = client.name;
