@@ -29,6 +29,10 @@ const app = Vue.createApp({
                 data: data
             }))
         },
+        call(client){
+            this.$ref.video.invite(client);
+        }
+
     },
     computed: {},
     mounted() {

@@ -16,15 +16,22 @@ app.component('Client', {
     template:
     /*html*/
         `
+<div class="grid-container">
+    <div class="list-of-connected-users">
         <ul id="connected_users">
             <li>Connected users</li>
-            <li v-for="client in clients">{{displayName(client)}}<button @click="call(client)">Call placeholder</button></li>
+            <li v-for="client in clients">{{displayName(client)}}
+            <button @click="call(client)">Call placeholder</button>
+            </li>
         </ul>
+    </div>
+</div>
          `
     ,
     methods: {
         call(client) {
             console.log("Clicked client: " + client.id)
+            this.$emit('call-client')
         },
         displayName(client) {
             let name = client.name;
