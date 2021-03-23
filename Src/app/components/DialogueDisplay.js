@@ -70,8 +70,8 @@ app.component('dialogue-display', {
         },
 
         handleNewICECandidateMsg(data) {
+            console.log("ICECandidateMsg: " + data.candidate)
             let candidate = new RTCIceCandidate(data.candidate);
-
             this.myPeerConnection.addIceCandidate(candidate)
                 .catch(this.reportError);
         },
@@ -182,16 +182,19 @@ app.component('dialogue-display', {
         },
 
         handleICECandidateEvent(event) {
+            console.log("Ice Candidate: " + event.candidate);
+            let target = this.targetId;
+            let socket = this.socket;
             if (event.candidate) {
                 let data = JSON.stringify({
                     type: "new-ice-candidate",
-                    target: this.targetId,
+                    target: target,
                     candidate: event.candidate
                 });
-                this.socket.send(JSON.stringify({
+                socket.send(JSON.stringify({
                     code: 4,
                     data: data
-                }))
+                }));
             }
         },
 
@@ -203,6 +206,7 @@ app.component('dialogue-display', {
 
         //Det vi skal gjøre når koblingen brytes
         handleRemoveTrackEvent(event) {
+            console.log("handleRemoveTrackEvent called")
             let stream = document.getElementById("received_video").srcObject;
             let trackList = stream.getTracks();
 
@@ -212,6 +216,7 @@ app.component('dialogue-display', {
         },
 
         handleICEConnectionStateChangeEvent(event) {
+            console.log("handleICEConnectionStateChangeEvent")
             switch (this.myPeerConnection.iceConnectionState) {
                 case "closed":
                 case "failed":
@@ -221,6 +226,7 @@ app.component('dialogue-display', {
         },
 
         handleSignalingStateChangeEvent(event) {
+            console.log("handleSignalingStateChangeEvent")
             switch (this.myPeerConnection.signalingState) {
                 case "closed":
                     this.closeVideoCall();

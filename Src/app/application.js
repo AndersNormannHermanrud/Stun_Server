@@ -55,11 +55,11 @@ const app = Vue.createApp({
                     let data = JSON.parse(msg.data);
                     switch (data.type){
                         case "video-offer":
-                            console.log("Sending video offer")
+                            console.log("Receiving video offer")
                             vm.$refs.video.handleVideoOfferMsg(data)
                             break
                         case "new-ice-candidate":
-                            console.log("Sending ice cannidate message")
+                            console.log("Receiving ice canidate message")
                             vm.$refs.video.handleNewICECandidateMsg(data)
                             break
                         case "video-answer":
