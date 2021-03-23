@@ -53,25 +53,40 @@ Messsage.decode = function (message){
 } */
 Message.encode = function(message, ip, port){
     //var type = hexStringToByte(0x0101);
-    console.log(ip+ ' '+ port);
+    console.log(ip + ' ' + port);
     var messageSplit = message.slice(4, 20);
+    var ipSplit = getByteArrayIP(ip);
+    console.log(ipSplit);
+    var portHex = tohex(port);
+    console.log(portHex);
     var startArray = [0x01, 0x01, 0x00, 0x0c];
     var thisIp = [0x4a, 0x7d, 0xc8, 0x7f];
+    //console.log(thisIp);
     //var thisIp = getByteFromIPArray(ip);
     var thisPort = [0xd7, 0x34];
     var thisIPv4 = 0x01;
     var thisReserve = 0x00;
     var thisAttrlen = 0x08;
     var thisAttrType = 0x01;
-    var bytes = [thisReserve, thisAttrType, 0x00, thisAttrlen, thisReserve, thisIPv4];
+    //var bytes = [thisReserve, thisAttrType, 0x00, thisAttrlen, thisReserve, thisIPv4];
+    var bytes = [
+        Message.ATTRIBUTES.RESERVED,
+        Message.ATTRIBUTES.MAPPED_ADDRESS,
+        Message.ATTRIBUTES.RESERVED,
+        thisAttrlen,
+        Message.ATTRIBUTES.RESERVED,
+        thisIPv4
+    ]
+    /* 
     for (let index = 0; index < thisPort.length; index++) {
         bytes.push(thisPort[index]);
     }
-    for (let index = 0; index < thisIp.length; index++) {
-        bytes.push(thisIp[index])
-    }
-    msg = Buffer.from(bytes)
-    arrmsg = [Buffer.from(startArray), messageSplit, msg1]
+    for (let index = 0; index < ipSplit.length; index++) {
+        bytes.push(ipSplit[index])
+    } */
+    console.log(bytes);
+    var msg1 = Buffer.from(bytes);
+    var arrmsg = [Buffer.from(Message.TYPE.BINDING_SUCCESS_RESPONSE), messageSplit, msg1, portHex, ipSplit ]
     return Buffer.concat(arrmsg)
 }
 
@@ -104,8 +119,17 @@ Message.TYPE = {
     REQUEST: 0x00,
     ERROR: 0x01,
     UPDATE: 0x02,
+    BINDING_SUCCESS_RESPONSE:[0x01,0x01,0x00,0x0c],
 }
-
+function  getByteArrayIP(ip){
+    var numArray = ip.split('.');
+    var bytes = [];
+    for (let index = 0; index < numArray.length; index++) {
+        bytes.push(numArray[index])
+        
+    }
+    return Buffer.from(bytes);
+}
 function hexStringToByte(str) {
     if (!str) {
         return new Uint8Array();
@@ -116,5 +140,18 @@ function hexStringToByte(str) {
         a.push(parseInt(str.substr(i,2),16));
     }
 
-    return new Uint8Array(a);
+    return new Uint16Array(a);
 };
+function hexEncode(str){
+    var s = unescape(encodeURIComponent(str))
+    var h = ''
+    for (var i = 0; i < s.length; i++) {
+        h += s.charCodeAt(i).toString(16)
+    }
+    return h
+}
+function tohex(int){
+    var buf = Buffer.allocUnsafe(2);
+    buf.writeUInt32BE(int);
+    return buf;
+}
