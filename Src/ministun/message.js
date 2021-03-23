@@ -33,6 +33,8 @@ The STUN Message Type field is decomposed further into the following
                 Figure 3: Format of STUN Message Type Field
 */
 Message.MAGIC_COOKIE = 0x2112A442;
+var IPv4 = 0x01;
+var AttributeLength = 0x08;
 
 function Message(type, transactionid, body) {
     this.type = type;
@@ -59,23 +61,23 @@ Message.encode = function(message, ip, port){
     console.log(ipSplit);
     var portHex = tohex(port);
     console.log(portHex);
-    var startArray = [0x01, 0x01, 0x00, 0x0c];
-    var thisIp = [0x4a, 0x7d, 0xc8, 0x7f];
+    //var startArray = [0x01, 0x01, 0x00, 0x0c];
+    //var thisIp = [0x4a, 0x7d, 0xc8, 0x7f];
     //console.log(thisIp);
     //var thisIp = getByteFromIPArray(ip);
-    var thisPort = [0xd7, 0x34];
-    var thisIPv4 = 0x01;
-    var thisReserve = 0x00;
-    var thisAttrlen = 0x08;
-    var thisAttrType = 0x01;
+    //var thisPort = [0xd7, 0x34];
+    
+    //var thisReserve = 0x00;
+    
+    //var thisAttrType = 0x01;
     //var bytes = [thisReserve, thisAttrType, 0x00, thisAttrlen, thisReserve, thisIPv4];
     var bytes = [
         Message.ATTRIBUTES.RESERVED,
         Message.ATTRIBUTES.MAPPED_ADDRESS,
         Message.ATTRIBUTES.RESERVED,
-        thisAttrlen,
+        AttributeLength,
         Message.ATTRIBUTES.RESERVED,
-        thisIPv4
+        IPv4
     ]
     /* 
     for (let index = 0; index < thisPort.length; index++) {
@@ -130,28 +132,8 @@ function  getByteArrayIP(ip){
     }
     return Buffer.from(bytes);
 }
-function hexStringToByte(str) {
-    if (!str) {
-        return new Uint8Array();
-    }
-
-    var a = [];
-    for (var i = 0, len = str.length; i < len; i+=2) {
-        a.push(parseInt(str.substr(i,2),16));
-    }
-
-    return new Uint16Array(a);
-};
-function hexEncode(str){
-    var s = unescape(encodeURIComponent(str))
-    var h = ''
-    for (var i = 0; i < s.length; i++) {
-        h += s.charCodeAt(i).toString(16)
-    }
-    return h
-}
 function tohex(int){
     var buf = Buffer.allocUnsafe(2);
-    buf.writeUInt32BE(int);
+    buf.writeUInt16BE(int);
     return buf;
 }

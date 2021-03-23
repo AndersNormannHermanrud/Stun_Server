@@ -5,7 +5,7 @@ const config = {
 	port: 3478
 };
 
-const server = new Stun(config);
+const server = new Stun();
 
 async function startServer() {
 	await server.start();
