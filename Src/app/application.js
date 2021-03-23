@@ -4,7 +4,7 @@ const app = Vue.createApp({
             room: undefined,
             username: undefined,
             time_stamp: undefined,
-            rooms: ["Hello","World"],
+            rooms: [],
             chat: [{
                 username: this.username, time_stamp: this.time_stamp
             }],
@@ -27,8 +27,7 @@ const app = Vue.createApp({
     mounted() {
         let vm = this;
         this.socket = new WebSocket('ws://localhost:80');
-        vm.$refs.video.setSocket(this.socket);
-        vm.$refs.video.createConnection();
+        vm.$refs.video.createConnection(this.socket);
         //Socket events
         this.socket.addEventListener("open", function () {
             this.send(JSON.stringify({
@@ -50,17 +49,21 @@ const app = Vue.createApp({
                     break
                 case 2: //Recieving additional data from server (currently only rooms)
                     vm.rooms = msg.data;
+                    vm.$refs.video.set_id(msg.id);
                     break
                 case 4: //Accept private (ice) message
                     let data = JSON.parse(msg.data);
                     switch (data.type){
                         case "video-offer":
-                            vm.$refs.video.handleVideoOfferMsg(msg.data)
+                            console.log("Sending video offer")
+                            vm.$refs.video.handleVideoOfferMsg(data)
                             break
                         case "new-ice-candidate":
-                            vm.$refs.video.handleNewICECandidateMsg(msg.data)
+                            console.log("Sending ice cannidate message")
+                            vm.$refs.video.handleNewICECandidateMsg(data)
                             break
                         case "video-answer":
+                            console.log("Sending video answer")
                             break
                         default:
                             break

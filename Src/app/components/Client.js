@@ -24,7 +24,7 @@ app.component('Client', {
     ,
     methods: {
         call(client) {
-            console.log("Clicked client: " + client.id)
+            this.$root.$refs.video.invite(client);
         },
         displayName(client) {
             let name = client.name;
@@ -34,6 +34,5 @@ app.component('Client', {
             return client.ip;
         },
     },
-    computed: {
-    },
+    computed: {},
 })

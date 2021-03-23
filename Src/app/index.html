@@ -17,7 +17,7 @@
             <li>Rooms</li>
             <li v-for="room in rooms">{{room}}</li>
         </ul>
-        <dialogue-display ref="video"></dialogue-display>
+        <dialogue-display id="video" ref="video"></dialogue-display>
         <Client ref="client" v-bind:clients="allClients"></Client>
     </div>
 </div>
