@@ -105,6 +105,12 @@ wsServer.on('request', function (request) {
                 clients.set_name(msg.data, connection);
                 clients.broadcast(update_clients_message());
                 break;
+            case 4: //Client wants to call comebody, Do ICE server functionality
+
+
+                break
+            default:
+                break
         }
     });
 
