@@ -1,16 +1,3 @@
-
-`
-For the poor soul that wakes up to this
-
-Bruker en lett modifisert kode som er beskrevet i https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Signaling_and_video_calling
-, altså JS Webrtc bibliotek sin offentlige dokumentasjon
-
-Les linken på dypere forklaring på hva alt gjør
-
-Har skrevet TODO på det som må gjøres, har tenkt gjøre det jeg når jeg våkner, bare få stun serveren til å funke
-
-`
-
 class WebRTC {
     constructor() {
         this.socket = null;
@@ -31,11 +18,14 @@ class WebRTC {
         };
     }
 
-    set_config(socket, localVid, recVid, myId){
+    set_config(socket, localVid, recVid){
         this.socket = socket;
         this.local_video = localVid;
-        this.rec_video = recVid
-        this.myId = myId;
+        this.rec_video = recVid;
+    }
+
+    set_id(id){
+        this.myId = id;
     }
 
     invite(client) {
@@ -88,8 +78,6 @@ class WebRTC {
         });
         //TODO USE OUR STUN SERVER
 
-        //TODO implement all these evets, FUCK
-        //Need kok pls
         //Sets the event methods for the different necessary events
         this.myPeerConnection.onicecandidate = this.handleICECandidateEvent;
         this.myPeerConnection.ontrack = this.handleTrackEvent;
@@ -107,7 +95,7 @@ class WebRTC {
             return this.myPeerConnection.setLocalDescription(offer);
         })
             .then(function () {
-                let data = JSON.stringify({ //TODO Change to our server
+                let data = JSON.stringify({
                     name: this.myId,
                     target: this.targetId,
                     type: "video-offer",
@@ -121,7 +109,6 @@ class WebRTC {
             .catch(this.reportError);
     }
 
-    //TODO change message format
     handleICECandidateEvent(event) {
         if (event.candidate) {
             let data = JSON.stringify({
@@ -136,7 +123,6 @@ class WebRTC {
         }
     }
 
-    //TODO change to our media elements
     handleTrackEvent(event) {
         console.log("Call ended")
         //document.getElementById("received_video").srcObject = event.streams[0];
@@ -144,7 +130,6 @@ class WebRTC {
     }
 
     //Det vi skal gjøre når koblingen brytes
-    //TODO fix
     handleRemoveTrackEvent(event) {
         let stream = document.getElementById("received_video").srcObject;
         let trackList = stream.getTracks();
@@ -154,7 +139,6 @@ class WebRTC {
         }
     }
 
-    //TODO fix
     handleICEConnectionStateChangeEvent(event) {
         switch (this.myPeerConnection.iceConnectionState) {
             case "closed":
@@ -164,7 +148,6 @@ class WebRTC {
         }
     }
 
-    //TODO fix
     handleSignalingStateChangeEvent(event) {
         switch (this.myPeerConnection.signalingState) {
             case "closed":
@@ -173,15 +156,11 @@ class WebRTC {
         }
     };
 
-    //TODO fix
     handleICEGatheringStateChangeEvent(event) {
         // Our sample just logs information to console here,
         // but you can do whatever you need.
     }
 
-
-    //Hangs up the call
-    //TODO fix
     hangUpCall() {
         this.closeVideoCall();
         let data = JSON.stringify({//TODO message format
@@ -195,7 +174,6 @@ class WebRTC {
         }))
     }
 
-    //TODO maybe fix
     closeVideoCall() {
         //TODO our video elements
         //let remoteVideo = document.getElementById("received_video");
@@ -234,9 +212,8 @@ class WebRTC {
     }
 
     //Accepts handleICECandidateEvent from another client
-    //TODO change message format
-    handleNewICECandidateMsg(msg) {
-        let candidate = new RTCIceCandidate(msg.candidate);
+    handleNewICECandidateMsg(data) {
+        let candidate = new RTCIceCandidate(data.candidate);
 
         this.myPeerConnection.addIceCandidate(candidate)
             .catch(this.reportError);
