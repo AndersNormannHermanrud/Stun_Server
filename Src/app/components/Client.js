@@ -24,7 +24,7 @@ app.component('Client', {
     ,
     methods: {
         call(client) {
-            this.$root.$refs.video.invite(client);
+            this.$root.$refs.video.connectToNewUser(client);
         },
         displayName(client) {
             let name = client.name;
