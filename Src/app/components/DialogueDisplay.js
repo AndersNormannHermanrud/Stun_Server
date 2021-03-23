@@ -104,9 +104,8 @@ app.component('dialogue-display', {
                 return navigator.mediaDevices.getUserMedia(mediaConstraint);
             })
                 .then(function (stream) {
-                    localStream = stream;
+                    let localStream = stream;
                     local_video.srcObject = localStream;
-
                     localStream.getTracks().forEach(track => myPeerConnection.addTrack(track, localStream));
                 })
                 .then(function () {
@@ -260,8 +259,8 @@ app.component('dialogue-display', {
 
         closeVideoCall() {
             //TODO our video elements
-            let remoteVideo = this.$refs.recvid.srcObject;
-            let localVideo = this.$refs.recvid.srcObject;
+            let remoteVideo = this.$refs.recvid;
+            let localVideo = this.$refs.locvid;
 
             if (this.myPeerConnection) {
                 this.myPeerConnection.ontrack = null;
@@ -290,7 +289,6 @@ app.component('dialogue-display', {
                     remoteVideo.removeAttribute("srcObject");
             this.targetId = null;
         },
-
         reportError() {
             console.log("Error, uncaught error in the DialogueDisplay?")
         },

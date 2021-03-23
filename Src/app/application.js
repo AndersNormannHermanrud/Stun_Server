@@ -4,7 +4,7 @@ const app = Vue.createApp({
             room: undefined,
             username: undefined,
             time_stamp: undefined,
-            rooms: [{}],
+            rooms: [],
             chat: [{
                 username: this.username, time_stamp: this.time_stamp
             }],
@@ -38,6 +38,7 @@ const app = Vue.createApp({
     mounted() {
         let vm = this;
         this.socket = new WebSocket('ws://localhost:80');
+        vm.$refs.video.createConnection(this.socket);
         //Socket events
         this.socket.addEventListener("open", function () {
             this.send(JSON.stringify({
@@ -55,22 +56,29 @@ const app = Vue.createApp({
                         let d = JSON.parse(msg.data[i]);
                         arr.push(new ClassClient(d.ip, d.name, d.id))
                     }
-                    this.allClients = arr;
-                    //vm.$refs.client.setClients(msg.data);//Call method of component that has ref="client"
+                    vm.allClients = arr;
                     break
-                case 2:
+                case 2: //Recieving additional data from server (currently only rooms)
                     vm.rooms = msg.data;
+                    vm.$refs.video.set_id(msg.id);
                     break
                 case 4: //Accept private (ice) message
                     let data = JSON.parse(msg.data);
                     switch (data.type){
                         case "video-offer":
-                            vm.$refs.video.handleVideoOfferMsg(msg.data)
+                            console.log("Receiving video offer");
+                            vm.$refs.video.handleVideoOfferMsg(data);
                             break
                         case "new-ice-candidate":
-                            vm.$refs.video.handleNewICECandidateMsg(msg.data)
+                            console.log("Receiving ice canidate message");
+                            vm.$refs.video.handleNewICECandidateMsg(data);
                             break
                         case "video-answer":
+                            console.log("Sending video answer");
+                            break
+                        case "hang-up":
+                            console.log("Other user hung up");
+                            vm.$refs.video.closeVideoCall();
                             break
                         default:
                             break
