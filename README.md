@@ -67,3 +67,14 @@ For the Vue app it  is important to be in the src folder
 ### STUN RFC
 
 https://tools.ietf.org/html/rfc8489
+
+
+### Referanser
+
+Tatt inspiration av forsjellige STUN server, for å förstå hvordan de virker
+* https://github.com/englercj/stun.js
+* https://github.com/noahlevenson/ministun
+* https://github.com/duhruh/stutter.js
+
+* Veldig bra WebRTC crash-course https://www.youtube.com/watch?v=FExZvpVvYxA
+* https://www.html5rocks.com/en/tutorials/webrtc/basics/#toc-mediastream
