@@ -7,10 +7,9 @@ app.component('dialogue-display', {
     
     
  <div class="dialogue-display">
-
         <video class="video-1" ref="recvid" id="received-video" autoplay></video>
         <video class="video-2" ref="locvid" id="local-video" autoplay muted></video>
-        <button @click="muteAudio">Mute Audio</button>
+        <button @click="muteAudio">Mute</button>
       </div>`,
     data() {
         return {
@@ -58,7 +57,8 @@ app.component('dialogue-display', {
             config: {
                 iceServers: [
                     {
-                        urls: "stun:stun.l.google.com:19320"
+                        //Change <YourIp> to your public ip adress where the stun server runs, so the program can use the stun server
+                        urls: "stun:<YourIp>:3478"
                     }
                 ]
             }
