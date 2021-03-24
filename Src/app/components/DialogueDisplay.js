@@ -11,7 +11,6 @@ app.component('dialogue-display', {
         <video class="video-1" ref="recvid" id="received-video" autoplay></video>
         <video class="video-2" ref="locvid" id="local-video" autoplay muted></video>
         <button @click="muteAudio">Mute Audio</button>
-        <button @click="muteAudio">Mute Audio</button>
       </div>`,
     data() {
         return {
