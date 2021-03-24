@@ -1,3 +1,4 @@
+const socket = io("ws://localhost:80");
 const app = Vue.createApp({
     data() {
         return {
@@ -41,7 +42,7 @@ const app = Vue.createApp({
     computed: {},
     mounted() {
         let vm = this;
-        this.socket = new WebSocket('ws://localhost:80');
+        this.socket = socket;
         this.socket.addEventListener("open", function () {
             this.send(JSON.stringify({
                 code: 1,

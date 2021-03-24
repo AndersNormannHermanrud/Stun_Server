@@ -2,22 +2,6 @@
 const ClientList = require("./ClientList");
 const Client = require("./Client");
 const http = require("http");
-const ws = require('websocket')
-const fs = require('fs').promises;
-const host = 'localhost';
-const port = 80;
-
-
-let indexFile;
-let applicationFile;
-let css;
-let components;
-
-let clients = new ClientList();
-let WebSocketServer = ws.server;
-
-let rooms = ["Planning poker", "Football talk", "Meetings", "Study group"] //Todo, make rooms classes
-
 const requestListener = function (req, res) {
     //console.log("URL: " + req.url)
     switch (req.url) {
@@ -56,9 +40,25 @@ const requestListener = function (req, res) {
             break;
     }
 }
+const server = http.createServer(requestListener);
+const fs = require('fs').promises;
+const host = 'localhost';
+let io = require('socket.io')(server);
+const port = 80;
+
+
+let indexFile;
+let applicationFile;
+let css;
+let components;
+let socketIO;
+
+let clients = new ClientList();
+
+let rooms = ["Planning poker", "Football talk", "Meetings", "Study group"] //Todo, make rooms classes
+
 
 //Reading files into memory for faster sending
-const server = http.createServer(requestListener);
 fs.readFile(__dirname + "/index.html")
     .then(contents => {
         indexFile = contents;
@@ -71,6 +71,10 @@ fs.readFile(__dirname + "/style.css")
     .then(contents => {
         css = contents;
     })
+/*fs.readFile(__dirname + "/../../node_modules/socket.io/socket.io.js")
+    .then(contents => {
+        socketIO = contents;
+    })*/
 components = readFiles("app/components/")
 
 
@@ -79,15 +83,13 @@ server.listen(port, host, () => {
 });
 
 // create the websocketserver
-wsServer = new WebSocketServer({
-    httpServer: server,
-});
 
 
 let lastKnownId;
 let lastKnownSender;
 // WebSocket server
-wsServer.on('request', function (request) {
+
+io.on('request', function (request) {
     let connection = request.accept(null, request.origin);
 
     connection.on('message', function (message) {
