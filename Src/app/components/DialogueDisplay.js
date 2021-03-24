@@ -22,6 +22,15 @@ app.component('dialogue-display', {
         }
     },
     methods: {
+        muteAudio() {
+            let audio = this.$refs.recvid.srcObject.getAudioTracks()[0].enabled;
+            if (audio) {
+                this.$refs.recvid.srcObject.getAudioTracks()[0].enabled = false;
+            } else {
+                this.$refs.recvid.srcObject.getAudioTracks()[0].enabled = true;
+            }
+        },
+
         addVideoStream(video, stream) {
             video.srcObject = stream;
             video.addEventListener('loadedmetadata', () => {
