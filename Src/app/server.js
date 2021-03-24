@@ -43,7 +43,8 @@ const requestListener = function (req, res) {
 const server = http.createServer(requestListener);
 const fs = require('fs').promises;
 const host = 'localhost';
-let io = require('socket.io')(server);
+let io = require('socket.io')(server, {});
+
 const port = 80;
 
 
@@ -51,7 +52,6 @@ let indexFile;
 let applicationFile;
 let css;
 let components;
-let socketIO;
 
 let clients = new ClientList();
 
@@ -89,12 +89,12 @@ let lastKnownId;
 let lastKnownSender;
 // WebSocket server
 
-io.on('request', function (request) {
-    let connection = request.accept(null, request.origin);
-
-    connection.on('message', function (message) {
+//const httpserver = http.createServer();
+//let socketserver = io.;
+io.on('connection', function (connection) {
+    connection.on("message", function (message) {
         try {
-            let msg = JSON.parse(message.utf8Data);
+            let msg = JSON.parse(message);
             switch (msg.code) {
                 case 1: //Client wants connection and server info
                     console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
@@ -125,29 +125,41 @@ io.on('request', function (request) {
                 default:
                     break
             }
-        } catch (error) {
-            console.log(message);
-            let media = message.data;
+        } catch
+            (error) {
+            console.log(message + "\tAnd is type: " + Object.prototype.toString.call(message));
+            let media = message;
             console.log("id: " + media.id + "\tType: " + Object.prototype.toString.call(media))
             //clients.sendToOneUser(lastKnownId, message);
         }
-    });
-
-    connection.on('close', function (connection) {
-        console.log("Client disconnected, IP: " + connection.remoteAddress)
-        clients.removeAt(clients.indexOf(connection.remoteAddress))
-        clients.broadcast(update_clients_message());
-    });
-
-    function update_clients_message() {
-        let data = clients.get_data();
-        return JSON.stringify({
-            code: 1,//Notify client of all connections
-            data: data,
-            message: "Ip adressess of all users"
-        });
-    }
+    })
+})
+;
+io.on('disconnect', function (connection) {
+    console.log("Client disconnected, IP: " + connection.remoteAddress)
+    clients.removeAt(clients.indexOf(connection.remoteAddress))
+    clients.broadcast(update_clients_message());
 });
+
+io.on('connection', function (connection, message) {
+    console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
+    clients.push(new Client(connection, "unnamed"));
+    clients.broadcast(update_clients_message());
+    connection.send(JSON.stringify({
+        code: 2,    //Info when joining, rooms etc
+        data: rooms,
+        id: clients.get_id_of(connection)
+    }));
+});
+
+function update_clients_message() {
+    let data = clients.get_data();
+    return JSON.stringify({
+        code: 1,//Notify client of all connections
+        data: data,
+        message: "Ip adressess of all users"
+    });
+}
 
 //For reading all components; Currently not adequate for reuse
 function readFiles(dir) {

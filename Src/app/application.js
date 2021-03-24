@@ -43,14 +43,14 @@ const app = Vue.createApp({
     mounted() {
         let vm = this;
         this.socket = socket;
-        this.socket.addEventListener("open", function () {
+        this.socket.on("open", function () {
             this.send(JSON.stringify({
                 code: 1,
                 data: this.url
             }))
         });
-        this.socket.addEventListener("message", function (message) {
-            let msg = JSON.parse(message.data)
+        this.socket.on("message", function (message) {
+            let msg = JSON.parse(message)
             switch (msg.code) {
                 case 1: //Receive info about other user
                     console.log("Recieving user data")
@@ -67,6 +67,7 @@ const app = Vue.createApp({
                     console.log("My id: " + msg.id)
                     break
                 case 4: //Accept private (ice) message
+                    console.log("Ice message recieved from: " + msg.id)
                     vm.$refs.video.connectMessage(msg.id);
                     break
                 default:
