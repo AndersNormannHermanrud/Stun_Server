@@ -57,7 +57,7 @@ Messsage.decode = function (message){
 } 
 */
 Message.encode = function(message, ip, port){
-    console.log(ip + ' ' + port);
+    console.log('Connection to ip: ' + ip + ' port: ' + port);
     var messageSplit = message.slice(4, 20);
     var ipAsBytes = getByteArrayFromIP(ip);
     //console.log(ipSplit);
@@ -72,11 +72,15 @@ Message.encode = function(message, ip, port){
         Message.ATTRIBUTES.RESERVED,        //0 0x0000
         IPv4                                //1 0x01
     ];
-    console.log(bytes);
-    var msgAsBuffer = Buffer.from(bytes);
+    console.log(bytes); // forventet [ 0, 1, 0, 8, 0, 1 ]
+    var bytesAsBuffer = Buffer.from(bytes);
+    console.log(bytesAsBuffer); // foventet <Buffer 00 01 00 08 00 01>
     var bindingSuccess = Buffer.from(Message.TYPE.BINDING_SUCCESS_RESPONSE);
-    var arrmsg = [bindingSuccess, messageSplit, msgAsBuffer, portByte, ipAsBytes ];
-    return Buffer.concat(arrmsg);
+    var arrayMessage = [bindingSuccess, messageSplit, bytesAsBuffer, portByte, ipAsBytes ];
+    //Buffer.concat brukes for å forene buffer objekt i en array til en buffer objekt
+    var bufferMessage = Buffer.concat(arrayMessage)
+    console.log(bufferMessage);
+    return bufferMessage;
 };
 
 //Atributer som kan brukes til STUN
