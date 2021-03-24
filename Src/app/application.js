@@ -23,14 +23,17 @@ const app = Vue.createApp({
             }))
         },
 
-        sendIceRequest(data){
-            this.socket.send(JSON.stringify({
-                code: 99999,
-                data: data
-            }))
-        },
-        call(client){
-            this.$refs.video.connectToNewUser(client.id);
+        call(client) {
+            let stream = this.$refs.video.stream;
+            console.log("Typeof stream when call in application is called: " + Object.prototype.toString.call(stream))
+            console.log(stream.id)
+            let myId = this.$refs.video.myid;
+            this.socket.send({
+                code: 4,
+                targetId: client.id,
+                id: myId,
+                stream: stream,
+            });
         }
 
     },
@@ -45,6 +48,7 @@ const app = Vue.createApp({
             }))
         });
         this.socket.addEventListener("message", function (message) {
+            console.log(message);
             let msg = JSON.parse(message.data)
             switch (msg.code) {
                 case 1: //Receive info about other user
@@ -58,14 +62,11 @@ const app = Vue.createApp({
                     break
                 case 2: //Recieving additional data from server (currently only rooms)
                     vm.rooms = msg.data;
-                    //vm.$refs.video.set_id(msg.id); //TODO fix
+                    vm.$refs.video.myid = msg.id;
+                    console.log("My id: " + msg.id)
                     break
                 case 4: //Accept private (ice) message
-                    let data = JSON.parse(msg.data);
-                    switch (data.type){
-                        default:
-                            break
-                    }
+                    vm.$refs.video.connectToNewUser(msg.id, msg.stream);
                     break
                 default:
                     break

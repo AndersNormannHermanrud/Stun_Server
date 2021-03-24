@@ -88,34 +88,38 @@ wsServer.on('request', function (request) {
     let connection = request.accept(null, request.origin);
 
     connection.on('message', function (message) {
-        let msg = JSON.parse(message.utf8Data);
-        switch (msg.code) {
-            case 1: //Client wants connection and server info
-                console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
-                clients.push(new Client(connection, "unnamed"));
-                clients.broadcast(update_clients_message());
-                connection.send(JSON.stringify({
-                    code: 2,    //Info when joining, rooms etc
-                    data: rooms,
-                    id: clients.get_id_of(connection)
-                }));
-                break
-            case 3: //client changing username
-                console.log(connection.remoteAddress + " is changing username to " + msg.data);
-                clients.set_name(msg.data, connection);
-                clients.broadcast(update_clients_message());
-                break;
-            case 4: //Client wants to call comebody, Do ICE server functionality
-                let message = JSON.parse(msg.data);
-                let returnMsg = JSON.stringify({
-                    code: 4,
-                    data: msg.data
-                })
-                console.log("Sending to: " +  message.target);
-                clients.sendToOneUser(message.target, returnMsg);
-                break
-            default:
-                break
+        try {
+            let msg = JSON.parse(message.utf8Data);
+            switch (msg.code) {
+                case 1: //Client wants connection and server info
+                    console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
+                    clients.push(new Client(connection, "unnamed"));
+                    clients.broadcast(update_clients_message());
+                    connection.send(JSON.stringify({
+                        code: 2,    //Info when joining, rooms etc
+                        data: rooms,
+                        id: clients.get_id_of(connection)
+                    }));
+                    break
+                case 3: //client changing username
+                    console.log(connection.remoteAddress + " is changing username to " + msg.data);
+                    clients.set_name(msg.data, connection);
+                    clients.broadcast(update_clients_message());
+                    break;
+                case 4: //Client wants to call somebody, Do ICE server functionality
+                    console.log("Sending rtc request to " + msg.targetId + " from: " + msg.id + "\tStream is type: " + Object.prototype.toString.call(msg.stream));
+                    let retMsg = JSON.stringify({
+                        code: 4,
+                        id: msg.id,
+                        stream: msg.stream
+                    });
+                    clients.sendToOneUser(msg.targetId, retMsg);
+                    break
+                default:
+                    break
+            }
+        } catch (error) {
+            console.log(message)
         }
     });
 

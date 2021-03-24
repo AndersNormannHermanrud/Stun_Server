@@ -25,23 +25,35 @@ app.component('dialogue-display', {
     data() {
         return {
             peer: undefined,
+            stream: undefined,
             peers: [],
+            myId: undefined,
         }
     },
     methods: {
         addVideoStream(video, stream) {
-            video.srcObject = stream
+            video.srcObject = stream;
             video.addEventListener('loadedmetadata', () => {
                 video.play()
             })
         },
 
-        connectToNewUser(userId) {
-            let stream = this.peer.Stream;
+        connectMessage(){
+            so
+        },
+
+        connectToNewUser(userId, stream) {
+            console.log("Stream: " + Object.prototype.toString.call(stream))
+            console.log("this.stream: " + Object.prototype.toString.call(this.stream))
+            let media = Object.assign(new MediaStream(), stream)
+            console.log("media cast: " + Object.prototype.toString.call(media))
+            console.log(media.id)
+            console.log(stream.id)
             let dd = this;
-            const call = this.peer.call(userId, stream)
+            const call = this.peer.call(userId, media);
             call.on('stream', userVideoStream => {
-                dd.addVideoStream(dd.$refs.recvid, userVideoStream)
+                console.log("Adding video stream");
+                dd.addVideoStream(dd.$refs.recvid, userVideoStream);
             })
             call.on('close', () => {
             })
@@ -56,7 +68,7 @@ app.component('dialogue-display', {
             config: {
                 iceServers: [
                     {
-                        url: "stun:stun.l.google.com:19320"
+                        urls: "stun:stun.l.google.com:19320"
                     }
                 ]
             }
@@ -65,10 +77,12 @@ app.component('dialogue-display', {
             video: true,
             audio: true
         }).then(stream => {
+            console.log("Typeof stream when created: " + Object.prototype.toString.call(stream))
+            dd.stream = stream;
             this.addVideoStream(this.$refs.locvid, stream)
             peer.on('call', call => {
-                call.answer(stream)
-                const video = dd.$refs.locvid
+                call.answer(stream);
+                const video = dd.$refs.recvid;
                 call.on('stream', userVideoStream => {
                     dd.addVideoStream(video, userVideoStream)
                 })

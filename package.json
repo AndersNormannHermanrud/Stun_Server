@@ -19,6 +19,7 @@
   "homepage": "https://github.com/AndersNormannHermanrud/Stun_Server#readme",
   "dependencies": {
     "browserify": "^17.0.0",
+    "socket.io": "^4.0.0",
     "vue": "^3.0.7",
     "websocket": "^1.0.33"
   }
