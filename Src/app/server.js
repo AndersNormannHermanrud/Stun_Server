@@ -94,7 +94,7 @@ let lastKnownSender;
 io.on('connection', function (connection) {
     console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
     clients.push(new Client(connection, "unnamed"));
-    clients.broadcast(update_clients_message());
+    clients.broadcast(update_clients_message())
     connection.send(JSON.stringify({
         code: 2,    //Info when joining, rooms etc
         data: rooms,
@@ -111,16 +111,6 @@ io.on('connection', function (connection) {
     connection.on("message", function (message) {
         let msg = JSON.parse(message);
         switch (msg.code) {
-            case 1: //Client wants connection and server info
-                console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
-                clients.push(new Client(connection, "unnamed"));
-                clients.broadcast(update_clients_message());
-                connection.send(JSON.stringify({
-                    code: 2,    //Info when joining, rooms etc
-                    data: rooms,
-                    id: clients.get_id_of(connection)
-                }));
-                break
             case 3: //client changing username
                 console.log(connection.remoteAddress + " is changing username to " + msg.data);
                 clients.set_name(msg.data, connection);

@@ -43,12 +43,6 @@ const app = Vue.createApp({
     mounted() {
         let vm = this;
         this.socket = socket;
-        this.socket.on("open", function () {
-            this.send(JSON.stringify({
-                code: 1,
-                data: this.url
-            }))
-        });
         this.socket.on("message", function (message) {
             let msg = JSON.parse(message)
             switch (msg.code) {
