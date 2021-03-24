@@ -1,6 +1,8 @@
 # Simple-UDP-4-STUN-Server-with-Vue-WebRTC-app
 =================
 
+Authors: Anders Normann Hermanrud, Olof André Marklund, Kenneth Solvoll
+
 https://github.com/AndersNormannHermanrud/Stun_Server
 
 A simple, STUN server with UDP-4 connectivity, with a Vue3 app for video streaming.
