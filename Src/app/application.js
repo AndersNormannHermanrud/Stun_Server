@@ -1,3 +1,4 @@
+const socket = io("ws://localhost:80");
 const app = Vue.createApp({
     data() {
         return {
