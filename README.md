@@ -1,5 +1,4 @@
-# Stun_Server
-Simple-UDP-4-STUN-Server-with-VUE-WebRTC-app
+# Simple-UDP-4-STUN-Server-with-VUE-WebRTC-app
 =================
 
 A simple, STUN server with UDP-4 connectivity, with a VUE3 app for video streaming.
@@ -24,21 +23,39 @@ More Attributes like UDP-6, TCP or XOR_MAPPED_ADDRESS would be the next step.
 
 For the web application we never got to the PlanningPoker part of the application.
 
+### Dependencies
+
+ * browserify           - To write Node.js modules to use in the browser
+ * Vue 3.0.7 or later   - Frontend tool to make the web page responsive
+ * websocket            - To connect to the STUN server
+
 ### Installation
 
-Clone the respitory
-run
- 
+Clone the repository
+
 ```sh
 npm install
 ```
 
-Navn på STUN-serveren og eventuell lenke til siste continuous integration/deployment kjøring
-Introduksjon
-Implementert funksjonalitet
-Fremtidig arbeid med oversikt over nåværende mangler
-Eksterne avhengigheter med en kort beskrivelse av hver avhengighet og hva den er brukt til
-Installasjonsinstruksjoner
-Instruksjoner for å starte STUN-serveren
-Hvordan en kan kjøre eventulle tester
-Eventuell lenke til API dokumentasjon
+### Run STUN server and Vue
+
+
+### stun
+
+```sh
+cd src
+node ./stun/start.js
+```
+
+### Vue
+
+```sh
+cd src
+node ./app/server.js
+```
+
+For the Vue app it  is important to be in the src folder
+
+### STUN RFC
+
+https://tools.ietf.org/html/rfc8489
