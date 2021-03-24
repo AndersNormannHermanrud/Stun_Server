@@ -4,14 +4,13 @@ app.component('dialogue-display', {
     /*html*/
         `
 
-    
-    
- <div class="dialogue-display">
+<div class="dialogue-display">
 
         <video ref="recvid" id="received-video" autoplay></video>
         <video ref="locvid" id="local-video" autoplay muted></video>
         <button @click="muteAudio">Mute Audio</button>
-      </div>`,
+
+</div>`,
     data() {
         return {
             peer: undefined,
