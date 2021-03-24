@@ -34,7 +34,7 @@ const app = Vue.createApp({
             }));
         },
         muteAudio(){
-            this.$refs.myPeerConnection.audio = false
+            //TODO make mute
         }
 
     },

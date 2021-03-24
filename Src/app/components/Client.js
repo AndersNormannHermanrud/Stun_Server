@@ -16,17 +16,17 @@ app.component('Client', {
     template:
     /*html*/
         `
-<div class="grid-container">
+
     <div class="list-of-connected-users">
-    
+    <h3>Connected users</h3>
         <ul id="connected_users">
-            <li>Connected users</li>
+            
             <li v-for="(client, index) in clients" :key="index">{{displayName(client)}}
             <button @click="call(client)">Call placeholder</button>
             </li>
         </ul>
     </div>
-</div>
+
          `
     ,
     methods: {
