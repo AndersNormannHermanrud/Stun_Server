@@ -21,7 +21,5 @@
     "socket.io": "^2.0.3",
     "vue": "^3.0.7"
   },
-  "devDependencies": {
-    "socket.io-client": "^4.0.0"
-  }
+  "devDependencies": {}
 }

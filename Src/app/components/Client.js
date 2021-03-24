@@ -36,6 +36,7 @@ app.component('Client', {
             console.log("Client id: " + client.id + "\tMy id: " + this.$root.$refs.video.myid)
         },
         displayName(client) {
+            //if(this.$root.$refs.video.)
             let name = client.name;
             if (name !== "unnamed") {
                 return client.name;

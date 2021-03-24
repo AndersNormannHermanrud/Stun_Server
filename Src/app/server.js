@@ -92,48 +92,6 @@ let lastKnownSender;
 //const httpserver = http.createServer();
 //let socketserver = io.;
 io.on('connection', function (connection) {
-    connection.on("message", function (message) {
-            let msg = JSON.parse(message);
-            switch (msg.code) {
-                case 1: //Client wants connection and server info
-                    console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
-                    clients.push(new Client(connection, "unnamed"));
-                    clients.broadcast(update_clients_message());
-                    connection.send(JSON.stringify({
-                        code: 2,    //Info when joining, rooms etc
-                        data: rooms,
-                        id: clients.get_id_of(connection)
-                    }));
-                    break
-                case 3: //client changing username
-                    console.log(connection.remoteAddress + " is changing username to " + msg.data);
-                    clients.set_name(msg.data, connection);
-                    clients.broadcast(update_clients_message());
-                    break;
-                case 4: //Client wants to call somebody, Do ICE server functionality
-                    console.log("Sending rtc request to " + msg.targetId + " from: " + msg.id + "\tStream is type: " + Object.prototype.toString.call(msg.stream));
-                    lastKnownId = msg.targetId;
-                    lastKnownSender = msg.id;
-                    let retMsg = JSON.stringify({
-                        code: 4,
-                        id: msg.id,
-                        stream: msg.stream
-                    });
-                    clients.sendToOneUser(msg.targetId, retMsg);
-                    break
-                default:
-                    break
-            }
-    })
-})
-;
-io.on('disconnect', function (connection) {
-    console.log("Client disconnected, IP: " + connection.remoteAddress)
-    clients.removeAt(clients.indexOf(connection.remoteAddress))
-    clients.broadcast(update_clients_message());
-});
-
-io.on('connection', function (connection, message) {
     console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
     clients.push(new Client(connection, "unnamed"));
     clients.broadcast(update_clients_message());
@@ -142,7 +100,49 @@ io.on('connection', function (connection, message) {
         data: rooms,
         id: clients.get_id_of(connection)
     }));
-});
+
+    connection.on('disconnect', function (connection) {
+        console.log("Client disconnected, IP: " + connection.remoteAddress)
+        clients.removeAt(clients.indexOf(connection.remoteAddress))
+        clients.broadcast(update_clients_message());
+    });
+
+
+    connection.on("message", function (message) {
+        let msg = JSON.parse(message);
+        switch (msg.code) {
+            case 1: //Client wants connection and server info
+                console.log("New client added to broadcast list, IP:" + connection.remoteAddress + " : " + connection.remotePort)
+                clients.push(new Client(connection, "unnamed"));
+                clients.broadcast(update_clients_message());
+                connection.send(JSON.stringify({
+                    code: 2,    //Info when joining, rooms etc
+                    data: rooms,
+                    id: clients.get_id_of(connection)
+                }));
+                break
+            case 3: //client changing username
+                console.log(connection.remoteAddress + " is changing username to " + msg.data);
+                clients.set_name(msg.data, connection);
+                clients.broadcast(update_clients_message());
+                break;
+            case 4: //Client wants to call somebody, Do ICE server functionality
+                console.log("Sending rtc request to " + msg.targetId + " from: " + msg.id + "\tStream is type: " + Object.prototype.toString.call(msg.stream));
+                lastKnownId = msg.targetId;
+                lastKnownSender = msg.id;
+                let retMsg = JSON.stringify({
+                    code: 4,
+                    id: msg.id,
+                    stream: msg.stream
+                });
+                clients.sendToOneUser(msg.targetId, retMsg);
+                break
+            default:
+                break
+        }
+    })
+})
+;
 
 function update_clients_message() {
     let data = clients.get_data();
