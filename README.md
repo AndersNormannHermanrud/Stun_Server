@@ -32,9 +32,9 @@ For the web application we never got to the PlanningPoker part of the applicatio
 
 ### Dependencies
 
- * browserify           - To write Node.js modules to use in the browser
  * Vue 3.0.7 or later   - Frontend tool to make the web page responsive
  * websocket            - To connect to the STUN server
+ * socket.io            - Better websocket library used for WebRTC
 
 
 ### Installation
@@ -69,12 +69,15 @@ For the Vue app it  is important to be in the src folder
 https://tools.ietf.org/html/rfc8489
 
 
-### Referanser
+### References & Inspiration
 
-Tatt inspiration av forsjellige STUN server, for å förstå hvordan de virker
+Taken inspiration from different STUN servers, to understand how they work.
 * https://github.com/englercj/stun.js
 * https://github.com/noahlevenson/ministun
 * https://github.com/duhruh/stutter.js
-
-* Veldig bra WebRTC crash-course https://www.youtube.com/watch?v=FExZvpVvYxA
+* https://www.w3schools.com/nodejs/ref_buffer.asp - Buffer information
+* https://www.w3schools.com/js/js_numbers.asp - Hexadecimal information
+* https://www.youtube.com/watch?v=FExZvpVvYxA - Very good WebRTC crash course
 * https://www.html5rocks.com/en/tutorials/webrtc/basics/#toc-mediastream
+* https://webrtc.github.io/samples/ - WebRTC bible
+* chrome://webrtc-internals/ - To test the WebRTC connections
