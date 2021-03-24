@@ -41,7 +41,7 @@ app.component('dialogue-display', {
 
         connectToNewUser(userId, stream) {
             let dd = this;
-            const call = this.peer.call(userId, stream);
+            const call = this.peer.call(stream, this.stream);
             call.on('stream', userVideoStream => {
                 console.log("Adding video stream");
                 dd.addVideoStream(dd.$refs.recvid, userVideoStream);
