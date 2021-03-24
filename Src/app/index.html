@@ -12,11 +12,11 @@
 <body>
 <div id="app">
     <div class="grid-container">
-        <div class="chat"></div>
-        <div class="list-of-rooms">
-            <li v-for="room in rooms">{{room}}</li>
+        <div class="chat">
+            <li v-for="m in chat">{{m}}</li>
+            <button @click="sendMsg">Send</button>
+            <textarea rows="1" cols="40" placeholder="Chat message" id="chatField"></textarea>
         </div>
-
         <div class="set-user-name-button">
             <textarea rows="auto" cols="auto" id="setUsernameField">Username</textarea>
             <button @click="setUserName">Set Username</button>

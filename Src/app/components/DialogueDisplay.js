@@ -11,6 +11,7 @@ app.component('dialogue-display', {
         <video ref="recvid" id="received-video" autoplay></video>
         <video ref="locvid" id="local-video" autoplay muted></video>
         <button @click="muteAudio">Mute Audio</button>
+        <button @click="muteAudio">Mute Audio</button>
       </div>`,
     data() {
         return {
@@ -61,12 +62,15 @@ app.component('dialogue-display', {
             console.log("Typeof stream when created: " + Object.prototype.toString.call(stream))
             dd.stream = stream;
             this.addVideoStream(this.$refs.locvid, stream)
+            const video = dd.$refs.recvid;
             peer.on('call', call => {
                 call.answer(stream);
-                const video = dd.$refs.recvid;
                 call.on('stream', userVideoStream => {
                     dd.addVideoStream(video, userVideoStream)
                 })
+            })
+            peer.on('close', () => {
+                video.srcObject = null;
             })
         })
     },
