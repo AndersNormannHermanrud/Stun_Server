@@ -13,12 +13,15 @@
 
         <dialogue-display ref="video"
                           :socket="socket"
-                          @set-user-name="setUserName">
+                          @set-user-name="setUserName"
+                          @mute-audio="muteAudio"
+        >
 
         </dialogue-display>
         <Client ref="client"
                 :clients="allClients"
-                @call-client="call">
+                @call-client="call"
+                >
 
         </Client>
 

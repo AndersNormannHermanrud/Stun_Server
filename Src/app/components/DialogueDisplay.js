@@ -15,10 +15,10 @@ app.component('dialogue-display', {
     </div>
     
  <div class="dialogue-display">
-      <div class="video-display">
+
         <video ref="recvid" id="received-video" autoplay></video>
         <video ref="locvid" id="local-video" autoplay muted></video>
-      </div>
+        <button @click="muteAudio">Mute Audio</button>
       </div>
   </div>`,
     data() {
@@ -35,7 +35,7 @@ app.component('dialogue-display', {
                 audio: true,
                 video: {
                     aspectRatio: {
-                        ideal: 1.333333
+                        ideal: 1
                     }
                 }
             },
@@ -66,6 +66,10 @@ app.component('dialogue-display', {
         },
         setUserName(){
             this.$emit('set-user-name')
+        },
+
+        muteAudio(){
+            this.$emit('mute-audio')
         },
 
         set_id(id) {

@@ -31,6 +31,9 @@ const app = Vue.createApp({
         },
         call(client){
             this.$refs.video.invite(client);
+        },
+        muteAudio(){
+            this.$refs.myPeerConnection.audio = false
         }
 
     },
