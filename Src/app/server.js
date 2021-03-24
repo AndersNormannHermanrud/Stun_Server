@@ -127,6 +127,12 @@ io.on('connection', function (connection) {
                 });
                 clients.sendToOneUser(msg.targetId, retMsg);
                 break
+            case 6:
+                clients.broadcast(JSON.stringify({
+                    code: 6,
+                    data: msg.data
+                }));
+                break
             default:
                 break
         }

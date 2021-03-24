@@ -32,6 +32,18 @@ const app = Vue.createApp({
                 stream: stream,
             }));
         },
+
+        sendMsg() {
+            let data = document.getElementById("chatField").value;
+            if(data !== "") {
+                this.socket.send(JSON.stringify({
+                    code: 6,
+                    data: data
+                }));
+            }
+        },
+
+
         muteAudio(){
             //TODO make mute
         },
@@ -65,6 +77,8 @@ const app = Vue.createApp({
                     console.log("Ice message recieved from: " + msg.id)
                     vm.$refs.video.connectToNewUser(msg.id, msg.stream);
                     break
+                case 6:
+                    vm.chat.push(msg.data)
                 default:
                     break
             }
