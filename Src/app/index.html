@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <!-- import Vue.js -->
     <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -17,13 +18,11 @@
 
         </dialogue-display>
         <Client ref="client"
-                :clients="allClients"
-                @call-client="call">
-
+                :clients="allClients">
         </Client>
 
 </div>
-
+<script src="/socket.io/socket.io.js"></script>
 <!-- Import App -->
 <script src="application.js"></script>
 

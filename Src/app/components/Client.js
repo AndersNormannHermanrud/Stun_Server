@@ -31,14 +31,16 @@ app.component('Client', {
     ,
     methods: {
         call(client) {
-            this.$emit('call-client', client);
+            //this.$emit('call-client', client);
+            this.$root.call(client);
+            console.log("Client id: " + client.id + "\tMy id: " + this.$root.$refs.video.myid)
         },
         displayName(client) {
             let name = client.name;
             if (name !== "unnamed") {
                 return client.name;
             }
-            return client.ip;
+            return client.id;
         },
     },
     computed: {},
