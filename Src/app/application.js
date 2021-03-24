@@ -25,9 +25,7 @@ const app = Vue.createApp({
         },
 
         call(client) {
-            let stream = this.$refs.video.stream;
-            console.log("Typeof stream when call in application is called: " + Object.prototype.toString.call(stream))
-            console.log(stream.id)
+            let stream = this.$refs.video.peer.id;
             let myId = this.$refs.video.myid;
             this.socket.send(JSON.stringify({
                 code: 4,
@@ -35,7 +33,6 @@ const app = Vue.createApp({
                 id: myId,
                 stream: stream,
             }));
-            this.socket.send(stream);
         }
 
     },
@@ -68,7 +65,7 @@ const app = Vue.createApp({
                     break
                 case 4: //Accept private (ice) message
                     console.log("Ice message recieved from: " + msg.id)
-                    vm.$refs.video.connectMessage(msg.id);
+                    vm.$refs.video.connectToNewUser(msg.id, msg.stream);
                     break
                 default:
                     break

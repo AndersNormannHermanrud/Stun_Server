@@ -93,7 +93,6 @@ let lastKnownSender;
 //let socketserver = io.;
 io.on('connection', function (connection) {
     connection.on("message", function (message) {
-        try {
             let msg = JSON.parse(message);
             switch (msg.code) {
                 case 1: //Client wants connection and server info
@@ -125,13 +124,6 @@ io.on('connection', function (connection) {
                 default:
                     break
             }
-        } catch
-            (error) {
-            console.log(message + "\tAnd is type: " + Object.prototype.toString.call(message));
-            let media = message;
-            console.log("id: " + media.id + "\tType: " + Object.prototype.toString.call(media))
-            //clients.sendToOneUser(lastKnownId, message);
-        }
     })
 })
 ;

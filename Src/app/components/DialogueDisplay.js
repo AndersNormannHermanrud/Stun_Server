@@ -39,19 +39,9 @@ app.component('dialogue-display', {
             })
         },
 
-        connectMessage(userId){
-            this.targetId = userId;
-        },
-
         connectToNewUser(userId, stream) {
-            console.log("Stream: " + Object.prototype.toString.call(stream))
-            console.log("this.stream: " + Object.prototype.toString.call(this.stream))
-            let media = Object.assign(new MediaStream(), stream)
-            console.log("media cast: " + Object.prototype.toString.call(media))
-            console.log(media.id)
-            console.log(stream.id)
             let dd = this;
-            const call = this.peer.call(userId, media);
+            const call = this.peer.call(userId, stream);
             call.on('stream', userVideoStream => {
                 console.log("Adding video stream");
                 dd.addVideoStream(dd.$refs.recvid, userVideoStream);
