@@ -23,14 +23,15 @@ const app = Vue.createApp({
             }))
         },
 
-        sendIceRequest(data){
+        call(client) {
+            let stream = this.$refs.video.peer.id;
+            let myId = this.$refs.video.myid;
             this.socket.send(JSON.stringify({
-                code: 99999,
-                data: data
-            }))
-        },
-        call(client){
-            this.$refs.video.invite(client);
+                code: 4,
+                targetId: client.id,
+                id: myId,
+                stream: stream,
+            }));
         },
         muteAudio(){
             this.$refs.myPeerConnection.audio = false
@@ -40,17 +41,15 @@ const app = Vue.createApp({
     computed: {},
     mounted() {
         let vm = this;
-        this.socket = new WebSocket('ws://localhost:80');
-        vm.$refs.video.createConnection(this.socket);
-        //Socket events
-        this.socket.addEventListener("open", function () {
+        this.socket = socket;
+        this.socket.on("open", function () {
             this.send(JSON.stringify({
                 code: 1,
                 data: this.url
             }))
         });
-        this.socket.addEventListener("message", function (message) {
-            let msg = JSON.parse(message.data)
+        this.socket.on("message", function (message) {
+            let msg = JSON.parse(message)
             switch (msg.code) {
                 case 1: //Receive info about other user
                     console.log("Recieving user data")
@@ -63,25 +62,12 @@ const app = Vue.createApp({
                     break
                 case 2: //Recieving additional data from server (currently only rooms)
                     vm.rooms = msg.data;
-                    vm.$refs.video.set_id(msg.id);
+                    vm.$refs.video.myid = msg.id;
+                    console.log("My id: " + msg.id)
                     break
                 case 4: //Accept private (ice) message
-                    let data = JSON.parse(msg.data);
-                    switch (data.type){
-                        case "video-offer":
-                            console.log("Receiving video offer")
-                            vm.$refs.video.handleVideoOfferMsg(data)
-                            break
-                        case "new-ice-candidate":
-                            console.log("Receiving ice canidate message")
-                            vm.$refs.video.handleNewICECandidateMsg(data)
-                            break
-                        case "video-answer":
-                            console.log("Sending video answer")
-                            break
-                        default:
-                            break
-                    }
+                    console.log("Ice message recieved from: " + msg.id)
+                    vm.$refs.video.connectToNewUser(msg.id, msg.stream);
                     break
                 default:
                     break

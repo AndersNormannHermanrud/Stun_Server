@@ -1,28 +1,23 @@
 const dgram = require("dgram");
-const {Message} = require("./message.js")
-
-
+const { Message } = require("./message.js")
 
 class Stun {
-	constructor({port = 3478, udp4 = true} = {}) {
-		this.udp4 = udp4;
-		this.port = port;
-		this.socket = null;
+	constructor() {
+        //I denna STUN serer så gir vil kun mulighet å sende via udp4 og bruker standard port 3478
+		this.udp4 = true;
+		this.port = 3478;
+		
 	}
 
 	start() {
 		return new Promise(() => { 
 			this.socket = dgram.createSocket("udp4");
-            //this.socket.on("listening", console.log('socket listening on '+this.port));
 			this.socket.on("message", this.sendMessage.bind(this));
 			this.socket.bind(this.port);
 			console.log('starting stunserver');
+            
 		}); 
 	}
-
-    send() {
-        this.socket.send('test', 3478, '127.0.0.1');
-    }
 
 	stop() {
 		return new Promise(() => {
@@ -30,6 +25,7 @@ class Stun {
 			this.socket.close();
 		});
 	}
+
 	sendMessage(msg, rinfo) {
 		this.socket.send(Message.encode(msg, rinfo.address, rinfo.port), rinfo.port, rinfo.address);	
 	}
