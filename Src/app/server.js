@@ -83,6 +83,9 @@ wsServer = new WebSocketServer({
     httpServer: server,
 });
 
+
+let lastKnownId;
+let lastKnownSender;
 // WebSocket server
 wsServer.on('request', function (request) {
     let connection = request.accept(null, request.origin);
@@ -108,6 +111,8 @@ wsServer.on('request', function (request) {
                     break;
                 case 4: //Client wants to call somebody, Do ICE server functionality
                     console.log("Sending rtc request to " + msg.targetId + " from: " + msg.id + "\tStream is type: " + Object.prototype.toString.call(msg.stream));
+                    lastKnownId = msg.targetId;
+                    lastKnownSender = msg.id;
                     let retMsg = JSON.stringify({
                         code: 4,
                         id: msg.id,
@@ -119,7 +124,10 @@ wsServer.on('request', function (request) {
                     break
             }
         } catch (error) {
-            console.log(message)
+            console.log(message);
+            let media = message.data;
+            console.log("id: " + media.id + "\tType: " + Object.prototype.toString.call(media))
+            //clients.sendToOneUser(lastKnownId, message);
         }
     });
 

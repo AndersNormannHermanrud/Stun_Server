@@ -28,6 +28,7 @@ app.component('dialogue-display', {
             stream: undefined,
             peers: [],
             myId: undefined,
+            targetId: undefined,
         }
     },
     methods: {
@@ -38,8 +39,8 @@ app.component('dialogue-display', {
             })
         },
 
-        connectMessage(){
-            so
+        connectMessage(userId){
+            this.targetId = userId;
         },
 
         connectToNewUser(userId, stream) {

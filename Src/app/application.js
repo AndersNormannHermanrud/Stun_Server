@@ -28,12 +28,13 @@ const app = Vue.createApp({
             console.log("Typeof stream when call in application is called: " + Object.prototype.toString.call(stream))
             console.log(stream.id)
             let myId = this.$refs.video.myid;
-            this.socket.send({
+            this.socket.send(JSON.stringify({
                 code: 4,
                 targetId: client.id,
                 id: myId,
                 stream: stream,
-            });
+            }));
+            this.socket.send(stream);
         }
 
     },
@@ -48,7 +49,6 @@ const app = Vue.createApp({
             }))
         });
         this.socket.addEventListener("message", function (message) {
-            console.log(message);
             let msg = JSON.parse(message.data)
             switch (msg.code) {
                 case 1: //Receive info about other user
@@ -66,7 +66,7 @@ const app = Vue.createApp({
                     console.log("My id: " + msg.id)
                     break
                 case 4: //Accept private (ice) message
-                    vm.$refs.video.connectToNewUser(msg.id, msg.stream);
+                    vm.$refs.video.connectMessage(msg.id);
                     break
                 default:
                     break
