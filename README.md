@@ -1,6 +1,8 @@
 # Simple-UDP-4-STUN-Server-with-Vue-WebRTC-app
 =================
 
+https://github.com/AndersNormannHermanrud/Stun_Server
+
 A simple, STUN server with UDP-4 connectivity, with a Vue3 app for video streaming.
 
 Our group connsists of three people and one of us worked with the STUN server and two on the Vue WebRTC app.
@@ -46,7 +48,7 @@ npm install
 ### Run STUN server and Vue
 
 
-#### stun
+#### STUN
 
 ```sh
 cd src
