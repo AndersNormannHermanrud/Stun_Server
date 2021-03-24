@@ -6,9 +6,7 @@ const app = Vue.createApp({
             username: undefined,
             time_stamp: undefined,
             rooms: [],
-            chat: [{
-                username: this.username, time_stamp: this.time_stamp
-            }],
+            chat: [],
             socket: undefined,
             allClients: [],
         }
@@ -36,6 +34,9 @@ const app = Vue.createApp({
         },
         muteAudio(){
             //TODO make mute
+        },
+        postMsg(textMsg){
+            this.chat.push(textMsg)
         }
 
     },

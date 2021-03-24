@@ -39,6 +39,7 @@ button {
 }
 
 video {
+    border: 2px solid darkcyan;
     justify-content: center;
     align-items: center;
     max-width: 800px;
@@ -80,7 +81,7 @@ video {
 
 .chat {
     background-color: darkslategrey;
-    border: 2px solid #39495c;
+    border: 2px solid red;
     grid-area: bottom;
 
 }
