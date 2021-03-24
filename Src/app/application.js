@@ -46,6 +46,9 @@ const app = Vue.createApp({
 
         muteAudio(){
             //TODO make mute
+        },
+        postMsg(textMsg){
+            this.chat.push(textMsg)
         }
 
     },

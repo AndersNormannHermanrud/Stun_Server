@@ -25,6 +25,7 @@
                           :socket="socket"
                           @set-user-name="setUserName"
                           @mute-audio="muteAudio"
+                          class="dialogue-display"
         >
 
         </dialogue-display>
@@ -32,6 +33,8 @@
                 :clients="allClients"
                 @call-client="call">
         </Client>
+        <Chat @chatMsg-sent ="postMsg"></Chat>
+        <showChat :chat="chat"></showChat>
     </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
@@ -40,8 +43,8 @@
 
 <!-- Import Components -->
 <script src="components/DialogueDisplay.js"></script>
-<script src="components/OnlineUsers.js"></script>
-<script src="components/Rooms.js"></script>
+<script src="components/showChat.js.js"></script>
+<script src="components/Chat.js"></script>
 <script src="components/Client.js"></script>
 
 <!-- Mount App -->
